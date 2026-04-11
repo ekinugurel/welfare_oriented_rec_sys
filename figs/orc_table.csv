@@ -1,0 +1,6 @@
+Condition,Welfare-reducing %,Mean ORC,Improving %
+Standard,36.2%,0.4009,42.4%
+PUP-0.3,28.5%,0.3541,52.6%
+PUP-0.7,29.0%,0.3645,51.8%
+RM-ε (p75),28.2%,0.3763,52.0%
+Oracle,26.5%,0.3928,50.6%
