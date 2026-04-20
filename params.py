@@ -383,6 +383,7 @@ FEEDBACK_PARAMS: dict = {
     "p_like_max": 0.95,
     "rs_learning_rate": 0.12,
     "keyword_affinity_discount": 0.70,
+    "place_affinity_weight": 0.60,
     "feedback_strength_floor": 0.25,
     "feedback_strength_max": 2.0,
     "feedback_strength_min": 0.2,
@@ -685,4 +686,70 @@ SIM_DEFAULTS: dict = {
     "seed": 42,
     "time_step": 5,
     "reference_point_smoothing": 0.2,   # alpha in exponential smoothing
+}
+
+# ── Welfare-layer parameters (PUP uncertainty + Travel Cost Estimator) ──────
+#
+# All defaults are chosen to reproduce the behavior of the original
+# hardcoded values in welfare_layer.py exactly. Overriding any entry of
+# WELFARE_LAYER_PARAMS at runtime is sufficient to change the behavior
+# globally (as long as the affected object is constructed AFTER the
+# override, or the monkey-patch helper below is used).
+#
+# References in the paper (Appendix A of main.tex):
+# * app:tce    — Travel Cost Estimator (learning rate, VOT bounds, updates)
+# * app:computing_PUP — sigma_i floor and decay
+#
+# Keys
+# ----
+# Uncertainty (sigma_i in PUP/RM) — paper Eq. (10), app:computing_PUP
+#   uncertainty_initial          sigma when the TCE has zero observations (n=0)
+#   uncertainty_floor            sigma lower bound regardless of n
+#   uncertainty_decay_numerator  numerator in the "num / sqrt(n)" decay
+#
+# TCE — paper app:tce
+#   default_vot                  starting value of time ($/hr) for a user
+#   tce_learning_rate            eta_TCE in the EMA over realized travel cost
+#   vot_lower                    VOT clamp (lower bound, $/hr)
+#   vot_upper                    VOT clamp (upper bound, $/hr)
+#   vot_dissatisfied_threshold   satisfaction below this triggers VOT +
+#   vot_satisfied_threshold      satisfaction above this triggers VOT -
+#   vot_long_trip_min            trip longer than this (min) allowed to
+#                                trigger the VOT- branch
+#   vot_increase_rate            multiplicative nudge UP per |satisfaction|
+#   vot_decrease_rate            multiplicative nudge DOWN per  satisfaction
+#
+# Fallbacks for estimate_travel_cost when user-level info is missing
+#   fallback_speed_kmh           default travel speed ($/hr conversion needs
+#                                both speed + cost/km to compute GC)
+#   fallback_cost_per_km         default monetary cost per km
+#
+# Fixed VOT used in the continuous-feedback realized_travel_cost calc
+#   feedback_realized_vot        $/hr applied to trip.travel_time_min when
+#                                converting an experienced trip into the
+#                                continuous-feedback record. Does NOT feed
+#                                the VOT learning loop — it only shapes the
+#                                realized_travel_cost field.
+WELFARE_LAYER_PARAMS: dict = {
+    # Uncertainty in PUP/RM computation
+    "uncertainty_initial": 1.0,
+    "uncertainty_floor": 0.15,
+    "uncertainty_decay_numerator": 1.0,
+    # Travel Cost Estimator defaults
+    "default_vot": 15.0,
+    "tce_learning_rate": 0.15,
+    "vot_lower": 5.0,
+    "vot_upper": 50.0,
+    # Asymmetric VOT update thresholds + rates
+    "vot_dissatisfied_threshold": -0.2,
+    "vot_satisfied_threshold": 0.3,
+    "vot_long_trip_min": 20.0,
+    "vot_increase_rate": 0.05,
+    "vot_decrease_rate": 0.03,
+    # Fallbacks used when estimate_travel_cost is called without
+    # passing explicit speed/cost overrides.
+    "fallback_speed_kmh": 20.0,
+    "fallback_cost_per_km": 0.15,
+    # Fixed VOT used only when building a ContinuousFeedback record.
+    "feedback_realized_vot": 15.0,
 }

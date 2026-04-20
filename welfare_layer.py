@@ -63,12 +63,30 @@ def compute_continuous_feedback(
     trip,
     p_like: float,
     feedback_sensitivity: float = 1.0,
+    agent_vot: Optional[float] = None,
+    beta_time: Optional[float] = None,
+    beta_cost: Optional[float] = None,
 ) -> ContinuousFeedback:
     """Convert a Trip + binary feedback signal into a continuous feedback record.
 
     The satisfaction score maps from the sigmoid probability p_like
     into a continuous [-1, 1] range, preserving the agent's nuanced
     evaluation rather than collapsing to binary.
+
+    ``realized_travel_cost`` reports the generalized cost the agent
+    *actually incurred* on this trip, using the agent's true value of
+    time and time/cost sensitivities per Eq.~7 of the manuscript:
+
+        C = τ · v_i · β_i^time  +  κ · β_i^cost
+
+    Passing ``agent_vot``, ``beta_time``, and ``beta_cost`` is strongly
+    preferred — that is the path that exercises the TCE's VOT-learning
+    signal. When any of the three is ``None`` we fall back to
+    ``params.WELFARE_LAYER_PARAMS["feedback_realized_vot"]`` (prior
+    anchor) and β = 1. That fallback is kept for backward compatibility
+    with callers that don't plumb agent-level preferences through, but
+    it suppresses VOT learning because the observed cost then matches
+    the TCE's prior exactly.
 
     Parameters
     ----------
@@ -78,6 +96,13 @@ def compute_continuous_feedback(
         The probability of liking (from agent's feedback evaluation).
     feedback_sensitivity : float
         Agent-specific sensitivity multiplier.
+    agent_vot : float, optional
+        The agent's true value of time ($/hr).  When provided, the
+        realized generalized cost is computed using the agent's true
+        preferences rather than a fixed prior anchor.
+    beta_time, beta_cost : float, optional
+        The agent's time/cost sensitivity weights.  Default to 1.0 when
+        only a subset is supplied.
 
     Returns
     -------
@@ -88,9 +113,22 @@ def compute_continuous_feedback(
     satisfaction = (2.0 * p_like - 1.0) * min(2.0, max(0.2, feedback_sensitivity))
     satisfaction = max(-1.0, min(1.0, satisfaction))
 
-    # Generalized travel cost: time cost + monetary cost
-    # (travel_utility is already negative for costly trips)
-    realized_travel_cost = trip.cost + (trip.travel_time_min / 60.0) * 15.0  # $15/hr default VOT
+    # Generalized travel cost per Eq.~7 (manuscript) using the agent's
+    # *true* value of time and sensitivity weights when provided, so
+    # that the TCE can actually learn (the residual between what the
+    # user paid and what the TCE currently predicts is what drives the
+    # asymmetric VOT update).
+    if agent_vot is None:
+        agent_vot = params.WELFARE_LAYER_PARAMS["feedback_realized_vot"]
+    if beta_time is None:
+        beta_time = 1.0
+    if beta_cost is None:
+        beta_cost = 1.0
+
+    realized_travel_cost = (
+        trip.cost * beta_cost
+        + (trip.travel_time_min / 60.0) * agent_vot * beta_time
+    )
 
     net_utility = trip.activity_utility + trip.travel_utility
 
@@ -117,56 +155,205 @@ class TravelCostEstimator:
     - v̂_i: user's revealed value of time ($/hr)
 
     Uses exponential moving average over realized trip costs.
+
+    All tunable parameters (bounds, update deltas, thresholds, uncertainty
+    decay) are read from ``params.WELFARE_LAYER_PARAMS`` at construction
+    time so that robustness sweeps can vary them globally. The two most
+    commonly-swept knobs (``default_vot``, ``learning_rate``) may still be
+    passed as constructor arguments for backward compatibility; when they
+    are omitted (``None``), the corresponding entry of
+    ``params.WELFARE_LAYER_PARAMS`` is used.
     """
 
-    def __init__(self, default_vot: float = 15.0, learning_rate: float = 0.15):
-        self.default_vot = default_vot
-        self.learning_rate = learning_rate
-        # Per-user state: {user_id: {"vot": float, "avg_travel_cost": float, "n": int}}
+    def __init__(
+        self,
+        default_vot: Optional[float] = None,
+        learning_rate: Optional[float] = None,
+        config: Optional[Dict[str, float]] = None,
+    ):
+        cfg = dict(params.WELFARE_LAYER_PARAMS)
+        if config:
+            cfg.update(config)
+
+        self.default_vot = default_vot if default_vot is not None else cfg["default_vot"]
+        self.learning_rate = learning_rate if learning_rate is not None else cfg["tce_learning_rate"]
+
+        # Snapshot all remaining knobs so later edits to
+        # WELFARE_LAYER_PARAMS do not accidentally mutate an
+        # already-constructed TCE.
+        self.vot_lower = float(cfg["vot_lower"])
+        self.vot_upper = float(cfg["vot_upper"])
+        self.vot_dissatisfied_threshold = float(cfg["vot_dissatisfied_threshold"])
+        self.vot_satisfied_threshold = float(cfg["vot_satisfied_threshold"])
+        self.vot_long_trip_min = float(cfg["vot_long_trip_min"])
+        self.vot_increase_rate = float(cfg["vot_increase_rate"])
+        self.vot_decrease_rate = float(cfg["vot_decrease_rate"])
+        self.uncertainty_initial = float(cfg["uncertainty_initial"])
+        self.uncertainty_floor = float(cfg["uncertainty_floor"])
+        self.uncertainty_decay_numerator = float(cfg["uncertainty_decay_numerator"])
+        self.fallback_speed_kmh = float(cfg["fallback_speed_kmh"])
+        self.fallback_cost_per_km = float(cfg["fallback_cost_per_km"])
+
+        # Per-user state: {user_id: {"vot": float, "avg_travel_cost": float,
+        # "avg_travel_time_hr": float, "avg_monetary_cost": float, "n": int}}
+        # avg_travel_time_hr and avg_monetary_cost are running EMAs (same α)
+        # used by ``estimate_travel_cost`` to derive an empirical-Bayes
+        # anchor from avg_travel_cost.
         self.user_estimates: Dict[int, Dict[str, float]] = {}
 
     def update(self, feedback: ContinuousFeedback, travel_time_min: float, monetary_cost: float) -> None:
-        """Update user travel cost estimates from a feedback observation."""
+        """Update user travel cost estimates from a feedback observation.
+
+        Implements app:tce of the manuscript: EMA-smooth the realised
+        generalised cost reported by the user, then apply an asymmetric
+        multiplicative update to v̂_i (5 % up, 3 % down) driven by the
+        sign of the residual between observed and predicted travel
+        cost under Eq. 7.
+
+        Three points worth flagging (they differ from an earlier
+        implementation that kept VOT learning essentially dormant at
+        this horizon):
+
+        (a) The EMA on ``avg_travel_cost`` is driven by
+            ``feedback.realized_travel_cost`` — the *actual* cost the
+            agent paid, using its true v_i, β^time, β^cost per Eq. 7 —
+            rather than a cost re-synthesised with the TCE's own prior.
+
+        (b) The asymmetric multiplicative VOT update is triggered by
+            the **residual** between observed and predicted travel
+            cost (Eq. 7 using the current v̂_i, with β = 1 since only
+            v is learned — consistent with app:tce).  This is the
+            paper's "dissatisfaction with a distant trip → v too low"
+            heuristic, expressed in the variable the RS can actually
+            measure.  In this simulation the satisfaction signal alone
+            is a poor trigger because only *accepted* recommendations
+            produce feedback, which biases satisfaction upward; the
+            residual does not suffer from this truncation because it
+            compares apples-to-apples (observed vs predicted cost on
+            the same accepted trip) and captures the systematic bias
+            between the TCE's prior and the user's true valuation.
+            The 5 % / 3 % asymmetry (loss-aversion) is preserved.
+
+        (c) The step size is scaled by
+            ``min(1, |residual| / predicted_cost)`` so that a single
+            noisy observation can move v̂ by at most the full 5 %
+            (or 3 %) step, and tiny residuals produce tiny moves.
+
+        Notes
+        -----
+        ``vot_dissatisfied_threshold``, ``vot_satisfied_threshold`` and
+        ``vot_long_trip_min`` are retained as configuration fields for
+        backward compatibility but are no longer used by this update
+        rule.  The paper-relevant knobs are ``vot_increase_rate``,
+        ``vot_decrease_rate``, ``vot_lower``, ``vot_upper``, and the
+        EMA ``learning_rate``.
+        """
         state = self.user_estimates.setdefault(
             feedback.user_id,
-            {"vot": self.default_vot, "avg_travel_cost": 0.0, "n": 0},
+            {
+                "vot": self.default_vot,
+                "avg_travel_cost": 0.0,
+                "avg_travel_time_hr": 0.0,
+                "avg_monetary_cost": 0.0,
+                "n": 0,
+            },
         )
         state["n"] += 1
         alpha = self.learning_rate
+        travel_time_hr = travel_time_min / 60.0
 
-        # Update average travel cost with EMA
-        realized_gc = monetary_cost + (travel_time_min / 60.0) * state["vot"]
-        state["avg_travel_cost"] = (1 - alpha) * state["avg_travel_cost"] + alpha * realized_gc
+        # EMA of the realised generalised cost reported by the user plus
+        # matching EMAs of the trip's τ and κ.  Keeping all three with a
+        # common α makes the implied empirical VOT
+        # (avg_gc − avg_κ) / avg_τ well-defined, which ``estimate_travel_cost``
+        # then uses as a shrinkage anchor.  Initialise on first obs.
+        realized_gc = float(feedback.realized_travel_cost)
+        if state["n"] == 1:
+            state["avg_travel_cost"] = realized_gc
+            state["avg_travel_time_hr"] = travel_time_hr
+            state["avg_monetary_cost"] = float(monetary_cost)
+        else:
+            state["avg_travel_cost"] = (
+                (1.0 - alpha) * state["avg_travel_cost"] + alpha * realized_gc
+            )
+            state["avg_travel_time_hr"] = (
+                (1.0 - alpha) * state["avg_travel_time_hr"] + alpha * travel_time_hr
+            )
+            state["avg_monetary_cost"] = (
+                (1.0 - alpha) * state["avg_monetary_cost"] + alpha * float(monetary_cost)
+            )
 
-        # Update VOT estimate: if user dislikes high-time trips, infer higher VOT
-        # Simple heuristic: satisfaction < 0 on high-time trips → increase VOT
-        if travel_time_min > 0 and feedback.satisfaction < -0.2:
-            # User disliked a costly trip → they value time more
-            state["vot"] = min(50.0, state["vot"] * (1 + 0.05 * abs(feedback.satisfaction)))
-        elif travel_time_min > 20 and feedback.satisfaction > 0.3:
-            # User liked a long trip → they don't mind travel as much
-            state["vot"] = max(5.0, state["vot"] * (1 - 0.03 * feedback.satisfaction))
+        # Residual-based asymmetric VOT update.
+        if travel_time_hr <= 0:
+            return
+        predicted_cost = state["vot"] * travel_time_hr + monetary_cost
+        residual = realized_gc - predicted_cost
+        if residual == 0.0:
+            return
+        scale = min(1.0, abs(residual) / max(1e-3, predicted_cost))
+
+        if residual > 0:
+            # TCE under-predicted cost → true v > v̂ → bump up (loss-averse).
+            state["vot"] = min(
+                self.vot_upper,
+                state["vot"] * (1 + self.vot_increase_rate * scale),
+            )
+        else:
+            # TCE over-predicted cost → true v < v̂ → bump down (smaller step).
+            state["vot"] = max(
+                self.vot_lower,
+                state["vot"] * (1 - self.vot_decrease_rate * scale),
+            )
 
     def estimate_travel_cost(
         self,
         user_id: int,
         distance_km: float,
-        avg_speed_kmh: float = 20.0,
-        cost_per_km: float = 0.15,
+        avg_speed_kmh: Optional[float] = None,
+        cost_per_km: Optional[float] = None,
     ) -> float:
-        """Estimate generalized travel cost for a user-place pair.
+        """Estimate generalised travel cost for a user-place pair.
 
-        Returns Ĉ^travel_{ik} = β̂_i^time · τ̂ + β̂_i^cost · κ̂
+        Returns Ĉ^travel_{ik} ≈ v̂_i · τ_{ik} + κ_{ik}, consistent with
+        Eq. 7 of the manuscript (β̂ terms absorbed into v̂ because only
+        v_i is updated online; see ``update``).
+
+        When the user has accumulated enough feedback, we shrink the
+        analytical estimate toward the empirical anchor implied by the
+        EMAs of realised cost / travel time / monetary cost tracked in
+        ``update``.  That uses ``avg_travel_cost`` (hence ``learning_rate``)
+        to correct for any residual bias in v̂.  Shrinkage weight
+        ``w(n) = min(0.5, n / 20)`` caps the empirical influence at 50 %
+        and keeps the prior (v̂) driving when feedback is sparse.
         """
         state = self.user_estimates.get(user_id)
-        if state is None:
-            vot = self.default_vot
-        else:
-            vot = state["vot"]
+        speed = avg_speed_kmh if avg_speed_kmh is not None else self.fallback_speed_kmh
+        per_km = cost_per_km if cost_per_km is not None else self.fallback_cost_per_km
+        travel_time_hr = distance_km / max(1.0, speed)
+        monetary_cost = distance_km * per_km
 
-        travel_time_hr = distance_km / max(1.0, avg_speed_kmh)
-        monetary_cost = distance_km * cost_per_km
-        return vot * travel_time_hr + monetary_cost
+        if state is None or state["n"] == 0:
+            return self.default_vot * travel_time_hr + monetary_cost
+
+        vot = state["vot"]
+        analytical = vot * travel_time_hr + monetary_cost
+
+        # Empirical-Bayes anchor from the EMAs.  Skip when we haven't
+        # built up enough history or when avg_travel_time_hr is too
+        # small to invert safely.
+        n = int(state["n"])
+        if n < 3 or state["avg_travel_time_hr"] <= 1e-4:
+            return analytical
+
+        implied_vot = (
+            state["avg_travel_cost"] - state["avg_monetary_cost"]
+        ) / state["avg_travel_time_hr"]
+        # Clamp the implied VOT to the same bounds as v̂ to guard against
+        # noise blowing up the estimate.
+        implied_vot = max(self.vot_lower, min(self.vot_upper, implied_vot))
+        empirical = implied_vot * travel_time_hr + monetary_cost
+        w = min(0.5, n / 20.0)
+        return (1.0 - w) * analytical + w * empirical
 
     def get_user_vot(self, user_id: int) -> float:
         """Return estimated VOT for a user."""
@@ -177,12 +364,22 @@ class TravelCostEstimator:
         """Return uncertainty (σ) for user's utility estimate.
 
         Decreases with more observations. Used in PUP computation.
+
+        sigma(n=0) = uncertainty_initial
+        sigma(n>0) = max(uncertainty_floor,
+                         uncertainty_decay_numerator / sqrt(n))
+
+        Baseline: uncertainty_initial = 1.0,
+                  uncertainty_floor = 0.15,
+                  uncertainty_decay_numerator = 1.0.
         """
         state = self.user_estimates.get(user_id)
         if state is None or state["n"] == 0:
-            return 1.0  # high uncertainty
-        # Uncertainty decays as 1/sqrt(n), floored at 0.15
-        return max(0.15, 1.0 / math.sqrt(state["n"]))
+            return self.uncertainty_initial
+        return max(
+            self.uncertainty_floor,
+            self.uncertainty_decay_numerator / math.sqrt(state["n"]),
+        )
 
 
 # ── PUP and RM computation ───────────────────────────────────────────────────

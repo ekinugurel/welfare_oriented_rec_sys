@@ -13,7 +13,9 @@ from __future__ import annotations
 import math
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Sequence, Tuple
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+
+import params as _rs_params
 
 
 Coordinate = Tuple[float, float]
@@ -107,12 +109,37 @@ def _token_overlap_score(tokens_a: Iterable[str], tokens_b: Iterable[str]) -> fl
 class RecommenderSystem(ABC):
     """Base interface for recommenders."""
 
-    def __init__(self, name: str, catalog: Sequence[Place]):
+    def __init__(
+        self,
+        name: str,
+        catalog: Sequence[Place],
+        learning_rate: Optional[float] = None,
+        keyword_affinity_discount: Optional[float] = None,
+        place_affinity_weight: Optional[float] = None,
+    ):
         self.name = name
         self.catalog = list(catalog)
         self.place_by_id = {p.place_id: p for p in self.catalog}
         self.user_place_affinity: Dict[int, Dict[str, float]] = {}
         self.user_keyword_affinity: Dict[int, Dict[str, float]] = {}
+
+        # Learning knobs.  Read from ``params.FEEDBACK_PARAMS`` so that
+        # global sweeps (see ``robustness_task2.py``) can vary them in
+        # lockstep, while still supporting explicit constructor
+        # overrides for targeted tests.
+        fp = getattr(_rs_params, "FEEDBACK_PARAMS", {})
+        self.learning_rate = (
+            learning_rate if learning_rate is not None
+            else float(fp.get("rs_learning_rate", 0.12))
+        )
+        self.keyword_affinity_discount = (
+            keyword_affinity_discount if keyword_affinity_discount is not None
+            else float(fp.get("keyword_affinity_discount", 0.70))
+        )
+        self.place_affinity_weight = (
+            place_affinity_weight if place_affinity_weight is not None
+            else float(fp.get("place_affinity_weight", 0.60))
+        )
 
     @abstractmethod
     def recommend(
@@ -139,7 +166,9 @@ class RecommenderSystem(ABC):
         else:
             kw_affinity = 0.0
         # place_affinity and kw_affinity are in [-1, 1]. Map to [0, 1].
-        combined = 0.6 * place_affinity + 0.4 * kw_affinity
+        w_place = self.place_affinity_weight
+        w_kw = 1.0 - w_place
+        combined = w_place * place_affinity + w_kw * kw_affinity
         return max(0.0, min(1.0, 0.5 * (combined + 1.0)))
 
     def record_feedback(
@@ -148,13 +177,14 @@ class RecommenderSystem(ABC):
         place_id: str,
         liked: bool,
         feedback_strength: float = 1.0,
-        learning_rate: float = 0.12,
+        learning_rate: Optional[float] = None,
     ) -> None:
         """Update user personalization state from feedback."""
         place = self.place_by_id.get(place_id)
         if place is None:
             return
-        delta = learning_rate * max(0.2, min(2.0, feedback_strength))
+        lr = learning_rate if learning_rate is not None else self.learning_rate
+        delta = lr * max(0.2, min(2.0, feedback_strength))
         if not liked:
             delta *= -1.0
 
@@ -163,10 +193,11 @@ class RecommenderSystem(ABC):
         up[place_id] = max(-1.0, min(1.0, old_place + delta))
 
         uk = self.user_keyword_affinity.setdefault(user_id, {})
+        kw_discount = self.keyword_affinity_discount
         for keyword in place.keywords:
             k = keyword.lower()
             old_kw = uk.get(k, 0.0)
-            uk[k] = max(-1.0, min(1.0, old_kw + 0.7 * delta))
+            uk[k] = max(-1.0, min(1.0, old_kw + kw_discount * delta))
 
 
 class GoogleMapsReplica(RecommenderSystem):
@@ -189,8 +220,17 @@ class GoogleMapsReplica(RecommenderSystem):
         personalization_weight: float = 0.10,
         distance_scale_km: float = 5.0,
         coord_scale_km: float = 1.0,
+        learning_rate: Optional[float] = None,
+        keyword_affinity_discount: Optional[float] = None,
+        place_affinity_weight: Optional[float] = None,
     ):
-        super().__init__(name="google_maps", catalog=catalog)
+        super().__init__(
+            name="google_maps",
+            catalog=catalog,
+            learning_rate=learning_rate,
+            keyword_affinity_discount=keyword_affinity_discount,
+            place_affinity_weight=place_affinity_weight,
+        )
         weight_sum = prominence_weight + relevance_weight + proximity_weight
         self.prominence_weight = prominence_weight / weight_sum
         self.relevance_weight = relevance_weight / weight_sum
@@ -269,8 +309,17 @@ class PopularityRecommender(RecommenderSystem):
         review_weight: float = 0.35,
         popularity_weight: float = 0.40,
         personalization_weight: float = 0.12,
+        learning_rate: Optional[float] = None,
+        keyword_affinity_discount: Optional[float] = None,
+        place_affinity_weight: Optional[float] = None,
     ):
-        super().__init__(name=name, catalog=catalog)
+        super().__init__(
+            name=name,
+            catalog=catalog,
+            learning_rate=learning_rate,
+            keyword_affinity_discount=keyword_affinity_discount,
+            place_affinity_weight=place_affinity_weight,
+        )
         weight_sum = rating_weight + review_weight + popularity_weight
         self.rating_weight = rating_weight / weight_sum
         self.review_weight = review_weight / weight_sum

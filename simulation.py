@@ -822,10 +822,19 @@ class Simulation:
         if hasattr(self.recommender_stack, "record_continuous_feedback"):
             from welfare_layer import compute_continuous_feedback
 
+            # Pass the agent's true preferences through so the TCE can
+            # observe the generalized cost the user actually paid
+            # (Eq.~7 of the manuscript) and its VOT-learning trigger
+            # can fire on genuine mismatches with its prior.
             continuous_feedback = compute_continuous_feedback(
                 feedback_trip,
                 p_like=p_like,
                 feedback_sensitivity=getattr(agent, "feedback_sensitivity", 1.0),
+                agent_vot=getattr(agent, "vot", None),
+                beta_time=agent.preferences.get("time", 1.0)
+                    if hasattr(agent, "preferences") else 1.0,
+                beta_cost=agent.preferences.get("cost", 1.0)
+                    if hasattr(agent, "preferences") else 1.0,
             )
             self.recommender_stack.record_continuous_feedback(
                 continuous_feedback,
