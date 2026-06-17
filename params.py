@@ -13,6 +13,8 @@ Usage
 
 from __future__ import annotations
 
+import os
+
 # ── Simplification toggles ──────────────────────────────────────────────────
 #
 # Each toggle below disables one of the richer modelling assumptions so that
@@ -69,6 +71,81 @@ SIMPLIFIED_ETA_PARAMS: dict = {
 DEFAULT_PERSONA_CSV_PATH: str = (
     "data/synthetic_personas_realism_first_dopt_with_start_locs_Seattle.csv"
 )
+
+# Persona file for the OSM / New York frontend (homes sampled on the network).
+NYC_PERSONA_CSV_PATH: str = (
+    "data/synthetic_personas_realism_first_dopt_with_start_locs_NewYork.csv"
+)
+
+# ── OSM road-network geography (geo.py) ──────────────────────────────────────
+#
+# City presets define the area to download from OpenStreetMap. The network is
+# downloaded once and cached to GraphML under ``cache_dir``; routing is then
+# fully local (no per-run API usage). bbox order is (west, south, east, north).
+
+GEO_PARAMS: dict = {
+    "cache_dir": os.environ.get(
+        "WELFARE_RS_CACHE",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), ".cache"),
+    ),
+    "default_city": "nyc_manhattan",
+    "default_network_type": "drive",
+    "cities": {
+        # bbox = (west, south, east, north)
+        "nyc_manhattan": {"bbox": (-74.020, 40.700, -73.930, 40.820)},
+        "nyc_lower_manhattan": {"bbox": (-74.020, 40.700, -73.970, 40.745)},
+        "brooklyn_full": {"bbox": (-74.050, 40.565, -73.830, 40.740)},
+        "brooklyn_downtown_park_slope": {"bbox": (-74.010, 40.660, -73.955, 40.700)},
+        "brooklyn_south_prospect_bay_ridge": {"bbox": (-74.045, 40.575, -73.945, 40.670)},
+    },
+}
+
+# ── Real POI dataset (filtered to New York) ──────────────────────────────────
+#
+# The raw dataset (poi_children_merged_by_wkt.csv, ~375 MB, all US) is filtered
+# once to NYC leisure POIs by ``data/filter_nyc_pois.py`` into the small file
+# below; ``Simulation._load_osm_poi_catalog`` loads it. NAICS / category-text are
+# mapped to the recommender's leisure categories (see recommender_systems.
+# LEISURE_SUBTYPE_TO_CATEGORIES). The raw file has no ratings/reviews, so those
+# prominence signals are synthesised deterministically per place at load time.
+
+NYC_POI_CSV_PATH: str = os.path.join(GEO_PARAMS["cache_dir"], "pois", "nyc_leisure_pois.csv")
+
+POI_PARAMS: dict = {
+    # Coarse 5-borough bounding box (west, south, east, north) for the one-time
+    # filter; the loader further restricts to the active network's bounds.
+    "nyc_filter_bbox": (-74.30, 40.47, -73.68, 40.93),
+    # Cap POIs kept per category (random sample) so dense areas stay responsive.
+    "max_per_category": 600,
+    # NAICS 6-digit code -> leisure category understood by the recommenders.
+    "naics_to_category": {
+        "722511": "restaurant",      # full-service restaurants
+        "722513": "food_takeout",    # limited-service restaurants
+        "722514": "restaurant",      # cafeterias / buffets
+        "722515": "cafe",            # snack & nonalcoholic beverage bars (coffee)
+        "722410": "restaurant",      # drinking places (bars) — nightlife proxy
+        "712110": "museum",          # museums
+        "712120": "museum",          # historical sites
+        "712130": "park",            # zoos & botanical gardens
+        "712190": "park",            # nature parks & other similar institutions
+        "713940": "fitness_studio",  # fitness & recreational sports centres
+        "711110": "live_music",      # theater companies & dinner theaters
+        "711130": "live_music",      # musical groups & artists
+        "711310": "concert_venue",   # promoters of performing arts w/ facilities
+    },
+    # Fallback substring match on SUB_CATEGORY/TOP_CATEGORY text (most specific
+    # first) when no NAICS code maps.
+    "text_to_category": [
+        ("coffee", "cafe"), ("snack and nonalcoholic", "cafe"),
+        ("nature park", "park"), ("botanical", "park"), ("zoos", "park"),
+        ("museum", "museum"), ("historical site", "museum"),
+        ("fitness", "fitness_studio"), ("recreational sports", "fitness_studio"),
+        ("musical", "live_music"), ("performing arts", "live_music"),
+        ("theater", "live_music"), ("promoters", "concert_venue"),
+        ("drinking place", "restaurant"), ("full-service restaurant", "restaurant"),
+        ("limited-service restaurant", "food_takeout"), ("restaurant", "restaurant"),
+    ],
+}
 
 # ── City / spatial environment ───────────────────────────────────────────────
 
@@ -395,6 +472,9 @@ CATALOG_PARAMS: dict = {
     "review_count_range": (20, 5000),
     "popularity_multiplier_range": (1.0, 9.0),
     "popularity_floor": 10.0,
+    # OSM mode has no zones: synthetic POIs are placed on random network nodes,
+    # this many (lo, hi) per category, guaranteeing candidates for every subtype.
+    "osm_places_per_category": (6, 14),
     "places_per_zone": {
         "leisure": (1, 3),
         "mixed": (1, 2),

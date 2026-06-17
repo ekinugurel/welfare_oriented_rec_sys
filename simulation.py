@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import math
 import random
 from collections import Counter
@@ -37,6 +38,8 @@ class Simulation:
         use_persona_agents=True,
         persona_csv_path=None,
         poi_csv_path=None,
+        road_network=None,
+        disabled_modes=None,
         recommender_override=None,
         recommender_factory=None,
     ):
@@ -51,16 +54,22 @@ class Simulation:
         self.use_persona_agents = use_persona_agents
         self.persona_csv_path = persona_csv_path if persona_csv_path is not None else params.DEFAULT_PERSONA_CSV_PATH
         self.poi_csv_path = poi_csv_path
+        # Optional OSM road network (geo.RoadNetwork). When provided, the city is
+        # backed by a real street network and locations are (lat, lon) tuples.
+        self.road_network = road_network
         self._persona_lat_bounds = None
         self._persona_lon_bounds = None
 
         _city_size = city_size if city_size is not None else sd["city_size"]
-        self.city = City(_city_size, _city_size, seed=self.seed)
+        self.city = City(_city_size, _city_size, seed=self.seed, road_network=road_network)
         if context:
             self.city.context.update(context)
 
-        # Mode parameters — read from params at init time.
+        # Mode parameters — read from params at init time. ``disabled_modes``
+        # lets a caller drop modes entirely (e.g., the frontend removes transit).
         self.modes = {k: dict(v) for k, v in params.MODE_PARAMS.items()}
+        for _m in (disabled_modes or ()):
+            self.modes.pop(_m, None)
         self.mode_status = dict(params.MODE_STATUS)
         self.mode_enjoyment = dict(params.MODE_ENJOYMENT)
 
@@ -71,9 +80,19 @@ class Simulation:
         _num_agents = num_agents if num_agents is not None else sd["num_agents"]
         self.agents = []
         personas = self._load_personas(self.persona_csv_path) if self.use_persona_agents else []
+        # The given personas are used as-is for the first len(personas) agents.
+        # Beyond that, synthesise realistic, non-duplicate personas + homes (see
+        # _synthesize_persona) so the population can exceed the provided set.
+        used_homes = set()
+        for p in personas:
+            try:
+                used_homes.add((round(float(p["start_latitude"]), 6), round(float(p["start_longitude"]), 6)))
+            except (KeyError, ValueError, TypeError):
+                pass
+        syn_rng = random.Random(self.seed + 991)
         for i in range(_num_agents):
             if personas:
-                persona = personas[i % len(personas)]
+                persona = personas[i] if i < len(personas) else self._synthesize_persona(i, personas, syn_rng, used_homes)
                 agent = self._build_agent_from_persona(i, persona)
             else:
                 agent = self._build_random_agent(i)
@@ -130,6 +149,16 @@ class Simulation:
         x = int(round(clamp(lat_norm, 0.0, 1.0) * (self.city.size_x - 1)))
         y = int(round(clamp(lon_norm, 0.0, 1.0) * (self.city.size_y - 1)))
         return (x, y)
+
+    def _home_from_latlon(self, lat, lon):
+        """Map a persona's real (lat, lon) to a home location.
+
+        OSM mode snaps to the nearest network node; grid mode projects onto the
+        synthetic grid via min-max normalization.
+        """
+        if self.road_network is not None:
+            return self.road_network.snap_latlon(lat, lon)
+        return self._latlon_to_grid(lat, lon)
 
     @staticmethod
     def _coerce_unit_interval(value):
@@ -342,7 +371,7 @@ class Simulation:
         try:
             lat = float(persona.get("start_latitude", ""))
             lon = float(persona.get("start_longitude", ""))
-            home = self._latlon_to_grid(lat, lon)
+            home = self._home_from_latlon(lat, lon)
         except ValueError:
             home = self.city.sample_location("residential")
         work = self.city.sample_location("employment")
@@ -438,9 +467,128 @@ class Simulation:
 
         return agent
 
+    def _synthesize_persona(self, idx, personas, rng, used_homes):
+        """Extrapolate a new persona to extend the population past the given set.
+
+        Each attribute is resampled independently from the base personas' empirical
+        distribution, so per-attribute frequencies match the provided population
+        while the combination is new (not a duplicate row). The home is a fresh,
+        distinct node from the active road network — a realistic on-street location,
+        the same way the base homes were sampled. Caveat: independent resampling
+        reproduces the marginals but not cross-attribute correlations.
+        """
+        columns = list(personas[0].keys())
+        synthetic = {col: rng.choice([p.get(col, "") for p in personas]) for col in columns}
+        synthetic["PersonaID"] = f"SYN{idx:04d}"
+
+        if self.road_network is not None:
+            home = self.road_network.sample_node_latlon(rng)
+            for _ in range(25):  # resample to keep homes distinct
+                if (round(home[0], 6), round(home[1], 6)) not in used_homes:
+                    break
+                home = self.road_network.sample_node_latlon(rng)
+            used_homes.add((round(home[0], 6), round(home[1], 6)))
+            synthetic["start_latitude"] = f"{home[0]:.6f}"
+            synthetic["start_longitude"] = f"{home[1]:.6f}"
+        else:
+            synthetic["start_latitude"] = synthetic["start_longitude"] = ""
+        return synthetic
+
     # ── Place catalog ────────────────────────────────────────────────────────
 
+    def _synth_prominence(self, place_id):
+        """Deterministic synthetic rating / review_count / popularity for a place.
+
+        The real POI dataset has no ratings or reviews, which the recommender
+        prominence signal needs. We derive them deterministically from the place
+        id (independent of the simulation seed) so they are stable across runs and
+        identical across treatments — i.e. not a confound in matched comparisons.
+        """
+        cp = params.CATALOG_PARAMS
+        h = int(hashlib.md5(str(place_id).encode("utf-8")).hexdigest()[:8], 16)
+        r = random.Random(h)
+        rating = round(r.uniform(*cp["rating_range"]), 2)
+        review_count = r.randint(*cp["review_count_range"])
+        popularity = max(cp["popularity_floor"], review_count * r.uniform(*cp["popularity_multiplier_range"]))
+        return rating, review_count, popularity
+
+    def _load_osm_poi_catalog(self, poi_csv_path):
+        """Load real NYC leisure POIs (from data/filter_nyc_pois.py) onto the network.
+
+        POIs are restricted to the active network's bounds and capped per category
+        for responsiveness; rating/review/popularity are synthesised (the source
+        lacks them — see ``_synth_prominence``). Returns ``[]`` when no POI file is
+        available, so the simulation falls back to ``_build_synthetic_osm_catalog``.
+        """
+        if not poi_csv_path:
+            return []
+        path = Path(poi_csv_path)
+        if not path.exists():
+            return []
+
+        south, west, north, east = self.road_network.bounds
+        cap = params.POI_PARAMS.get("max_per_category", 600)
+        by_category: dict = {}
+        seen_ids = set()
+        with path.open(newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                try:
+                    lat = float(row["latitude"])
+                    lon = float(row["longitude"])
+                except (KeyError, ValueError):
+                    continue
+                if not (south <= lat <= north and west <= lon <= east):
+                    continue
+                category = (row.get("category") or "").strip()
+                if category not in params.CATEGORY_KEYWORDS:
+                    continue
+                place_id = row.get("place_id", "")
+                if place_id and place_id in seen_ids:
+                    continue
+                seen_ids.add(place_id)
+                by_category.setdefault(category, []).append(
+                    (place_id, row.get("name", ""), category, lat, lon)
+                )
+
+        # Cap per category with a fixed seed (not the simulation seed) so the POI
+        # set is identical across treatments/seeds — keeping the network mutation
+        # idempotent and matched comparisons clean.
+        cap_rng = random.Random(20240608)
+        selected = []
+        for rows in by_category.values():
+            if cap and len(rows) > cap:
+                rows = cap_rng.sample(rows, cap)
+            selected.extend(rows)
+
+        # Insert each POI as a mid-block graph node (at the projection of its real
+        # coordinate onto the nearest street) so routing is granular within a
+        # block. The POI keeps its EXACT (lat, lon) from the dataset as its
+        # location — routing snaps that coordinate to its own inserted node, and
+        # the map shows it at the true building position.
+        self.road_network.add_pois_as_nodes(
+            [(place_id, lat, lon) for (place_id, _n, _c, lat, lon) in selected]
+        )
+
+        catalog = []
+        for place_id, name, cat, lat, lon in selected:
+            rating, review_count, popularity = self._synth_prominence(place_id)
+            catalog.append(
+                Place(
+                    place_id=place_id or f"poi_{len(catalog) + 1}",
+                    name=name or cat,
+                    category=cat,
+                    location=(lat, lon),
+                    keywords=tuple(params.CATEGORY_KEYWORDS.get(cat, (cat,))),
+                    rating=rating,
+                    review_count=review_count,
+                    popularity=popularity,
+                )
+            )
+        return catalog
+
     def _load_poi_catalog(self, poi_csv_path):
+        if self.road_network is not None:
+            return self._load_osm_poi_catalog(poi_csv_path)
         if not poi_csv_path:
             return []
         path = Path(poi_csv_path)
@@ -470,7 +618,15 @@ class Simulation:
 
     def _build_default_recommender_stack(self):
         gm_cfg = self.rs_policy.get("google_maps", {})
-        if "coord_scale_km" not in gm_cfg:
+        if self.road_network is not None:
+            # OSM mode: locations are (lat, lon). The RS proximity heuristic uses
+            # straight-line (haversine) distance — the paper's "as the crow flies"
+            # signal, deliberately cruder than the network cost of the realised
+            # trip — so coord_scale is 1.0 (haversine already returns km).
+            from geo import haversine_km
+
+            gm_cfg = {**gm_cfg, "coord_scale_km": 1.0, "coord_distance_km": haversine_km}
+        elif "coord_scale_km" not in gm_cfg:
             gm_cfg = {**gm_cfg, "coord_scale_km": self.city.block_km}
         pop_cfg = self.rs_policy.get("popularity", {})
         return build_recommender_stack(
@@ -487,10 +643,47 @@ class Simulation:
             return recommender_factory(self, base_stack)
         return base_stack
 
+    def _build_synthetic_osm_catalog(self):
+        """Synthetic POIs placed on real network nodes.
+
+        Used until the real (lab-provided) NYC POI dataset is wired in via
+        ``_load_osm_poi_catalog``. Every category in ``CATEGORY_KEYWORDS`` gets a
+        handful of places, guaranteeing each leisure subtype has candidates.
+        """
+        cp = params.CATALOG_PARAMS
+        lo, hi = cp["osm_places_per_category"]
+        catalog = []
+        place_index = 0
+        for category, keywords in params.CATEGORY_KEYWORDS.items():
+            for _ in range(self.rng.randint(lo, hi)):
+                place_index += 1
+                location = self.city.road_network.sample_node_latlon(self.rng)
+                rating = round(self.rng.uniform(*cp["rating_range"]), 2)
+                review_count = self.rng.randint(*cp["review_count_range"])
+                popularity = max(
+                    cp["popularity_floor"],
+                    review_count * self.rng.uniform(*cp["popularity_multiplier_range"]),
+                )
+                catalog.append(
+                    Place(
+                        place_id=f"pl_{place_index}",
+                        name=f"{category}_{place_index}",
+                        category=category,
+                        location=location,
+                        keywords=tuple(keywords),
+                        rating=rating,
+                        review_count=review_count,
+                        popularity=popularity,
+                    )
+                )
+        return catalog
+
     def _build_place_catalog(self):
         loaded = self._load_poi_catalog(self.poi_csv_path)
         if loaded:
             return loaded
+        if self.road_network is not None:
+            return self._build_synthetic_osm_catalog()
         cp = params.CATALOG_PARAMS
         catalog = []
         place_index = 0
@@ -547,9 +740,11 @@ class Simulation:
         for agent in self.agents:
             agent.plan_day(self.city, self.rng, recommender_stack=rs_for_agent, day_index=day_index)
 
-    def run_days(self, num_days=7):
+    def run_days(self, num_days=7, progress=None, on_day_complete=None):
         outputs = []
         for day in range(num_days):
+            if progress is not None:
+                progress(day + 1, num_days)
             if day > 0:
                 self._plan_agents_for_day(day_index=day)
             self.last_road_volume = 0
@@ -559,6 +754,10 @@ class Simulation:
             day_summary = self.summarize().copy()
             day_summary["day"] = day + 1
             outputs.append(day_summary)
+            # Fires while ``agent.trips`` still holds this day's trips (the next
+            # day's planning resets them) — lets the caller capture per-day viz.
+            if on_day_complete is not None:
+                on_day_complete(day, self)
         return outputs
 
     def _mode_available(self, mode, agent, distance_km):
@@ -645,8 +844,57 @@ class Simulation:
             return 0.0
         return params.LEISURE_MODE_TASTE_SHIFTS.get(next_activity.subtype, {}).get(mode, 0.0)
 
-    def _evaluate_modes(self, agent, origin, destination, current_activity, next_activity):
+    def _mode_outcome(self, agent, mode, distance_km, road_factor, transit_factor, peer_status, next_activity):
+        """Utility/cost outcome for a single mode (shared by evaluation + fallback)."""
         uw = params.UTILITY_WEIGHTS
+        utility, travel_time, monetary_cost, emissions, gen_cost = self._base_mode_utility(
+            agent, mode, distance_km, road_factor, transit_factor
+        )
+
+        if next_activity.is_mandatory:
+            derived = agent.motivation_weights["derived"]
+            utility -= uw["derived_penalty_coeff"] * derived * (travel_time / uw["derived_time_divisor"])
+
+        intrinsic = agent.motivation_weights["intrinsic"]
+        utility += intrinsic * self.mode_enjoyment[mode] * (travel_time / uw["intrinsic_time_divisor"])
+
+        escape = agent.motivation_weights["escape"]
+        if next_activity.type == "leisure":
+            utility += escape * min(uw["escape_cap"], distance_km / uw["escape_distance_scale_km"])
+            utility += self._leisure_mode_adjustment(mode, next_activity)
+
+        positionality = agent.motivation_weights["positionality"]
+        status_delta = self.mode_status[mode] - peer_status
+        utility += positionality * agent.attitudes["status_seeking"] * status_delta
+
+        practice_bias = self.city.community_mode_bias(mode)
+        utility += practice_bias * agent.attitudes["practice_conformity"]
+        utility += agent.mode_preference_bias.get(mode, 0.0)
+
+        if mode == "car":
+            utility -= agent.car_access_penalty
+
+        travel_utility = utility
+        activity_utility = 0.0
+        if next_activity.type == "leisure" and next_activity.subtype:
+            seg_cfg = params.LEISURE_SEGMENTS.get(next_activity.subtype, {})
+            activity_utility += seg_cfg.get("activity_utility", 0.0)
+            activity_utility += uw["activity_intrinsic_coeff"] * agent.motivation_weights["intrinsic"]
+            activity_utility += uw["activity_escape_coeff"] * agent.motivation_weights["escape"]
+        utility = travel_utility + activity_utility
+
+        return {
+            "utility": utility,
+            "travel_utility": travel_utility,
+            "activity_utility": activity_utility,
+            "travel_time": travel_time,
+            "cost": monetary_cost,
+            "emissions": emissions,
+            "gen_cost": gen_cost,
+            "distance_km": distance_km,
+        }
+
+    def _evaluate_modes(self, agent, origin, destination, current_activity, next_activity):
         distance_km = self.city.distance_km(origin, destination)
         road_factor = self._road_congestion_factor(self.last_road_volume)
         transit_factor = self._transit_crowding_factor(self.last_transit_volume)
@@ -656,53 +904,18 @@ class Simulation:
         for mode in self.modes:
             if not self._mode_available(mode, agent, distance_km):
                 continue
-
-            utility, travel_time, monetary_cost, emissions, gen_cost = self._base_mode_utility(
-                agent, mode, distance_km, road_factor, transit_factor
+            outcomes[mode] = self._mode_outcome(
+                agent, mode, distance_km, road_factor, transit_factor, peer_status, next_activity
             )
 
-            if next_activity.is_mandatory:
-                derived = agent.motivation_weights["derived"]
-                utility -= uw["derived_penalty_coeff"] * derived * (travel_time / uw["derived_time_divisor"])
-
-            intrinsic = agent.motivation_weights["intrinsic"]
-            utility += intrinsic * self.mode_enjoyment[mode] * (travel_time / uw["intrinsic_time_divisor"])
-
-            escape = agent.motivation_weights["escape"]
-            if next_activity.type == "leisure":
-                utility += escape * min(uw["escape_cap"], distance_km / uw["escape_distance_scale_km"])
-                utility += self._leisure_mode_adjustment(mode, next_activity)
-
-            positionality = agent.motivation_weights["positionality"]
-            status_delta = self.mode_status[mode] - peer_status
-            utility += positionality * agent.attitudes["status_seeking"] * status_delta
-
-            practice_bias = self.city.community_mode_bias(mode)
-            utility += practice_bias * agent.attitudes["practice_conformity"]
-            utility += agent.mode_preference_bias.get(mode, 0.0)
-
-            if mode == "car":
-                utility -= agent.car_access_penalty
-
-            travel_utility = utility
-            activity_utility = 0.0
-            if next_activity.type == "leisure" and next_activity.subtype:
-                seg_cfg = params.LEISURE_SEGMENTS.get(next_activity.subtype, {})
-                activity_utility += seg_cfg.get("activity_utility", 0.0)
-                activity_utility += uw["activity_intrinsic_coeff"] * agent.motivation_weights["intrinsic"]
-                activity_utility += uw["activity_escape_coeff"] * agent.motivation_weights["escape"]
-            utility = travel_utility + activity_utility
-
-            outcomes[mode] = {
-                "utility": utility,
-                "travel_utility": travel_utility,
-                "activity_utility": activity_utility,
-                "travel_time": travel_time,
-                "cost": monetary_cost,
-                "emissions": emissions,
-                "gen_cost": gen_cost,
-                "distance_km": distance_km,
-            }
+        if not outcomes:
+            # No mode passed availability (e.g., a carless agent on a mid-range
+            # trip once transit is disabled). Walking is always physically
+            # possible, so use it as the universal fallback.
+            fallback = "walk" if "walk" in self.modes else next(iter(self.modes))
+            outcomes[fallback] = self._mode_outcome(
+                agent, fallback, distance_km, road_factor, transit_factor, peer_status, next_activity
+            )
 
         return outcomes
 

@@ -1,0 +1,289 @@
+PersonaID,Home,CarAccess,TransitAccess,Budget,TimeWindow,Group,MobilityNeeds,PrimaryInterest,TopRated,EnvConscious,RiskSalience,WillingnessAI,WalkTolerance,Language,Weather,Age,Sex,Income,start_latitude,start_longitude
+P0001,inner suburb,no car,medium,medium,weekend morning,solo,stroller-friendly,nature,yes,high,low,med,5,non-English,heat,teen,female,75k-125k,40.767871,-73.935911
+P0002,urban core,no car,medium,high,weekday evening,family w/ small kids,stroller-friendly,nightlife,yes,high,low,low,30,English,heat,old adult,male,75k-125k,40.765363,-73.965901
+P0003,outer suburb,carshare,medium,medium,weekday evening,solo,ADA/wheelchair,cultural,no,high,high,high,5,non-English,clear,mid adult,female,75k-125k,40.708051,-73.934184
+P0004,rural fringe,carshare,medium,low,weekend morning,mixed friends 20-30,none,cultural,no,high,high,med,15,non-English,clear,teen,male,35-75k,40.714173,-74.006304
+P0005,urban core,no car,medium,medium,weekend afternoon,solo,none,cultural,yes,low,low,low,30,non-English,clear,old adult,male,75k-125k,40.777674,-73.963223
+P0006,rural fringe,carshare,high,medium,weekend morning,mixed friends 20-30,ADA/wheelchair,cultural,no,high,low,high,30,non-English,rain,young adult,female,35-75k,40.818477,-73.961292
+P0007,inner suburb,carshare,medium,high,weekend morning,older adult pair,ADA/wheelchair,food,yes,low,high,low,15,non-English,rain,young adult,male,75k-125k,40.800429,-73.965691
+P0008,rural fringe,no car,medium,high,weekend afternoon,solo,ADA/wheelchair,food,no,low,low,low,30,English,heat,mid adult,male,75k-125k,40.717357,-73.953992
+P0009,outer suburb,own car,medium,high,weekend morning,mixed friends 20-30,stroller-friendly,nightlife,yes,high,low,high,5,English,heat,young adult,female,75k-125k,40.729244,-73.949911
+P0010,rural fringe,no car,low,low,weekend morning,solo,stroller-friendly,nature,no,high,low,low,15,English,heat,senior,female,35-75k,40.802073,-73.949755
+P0011,urban core,carshare,medium,high,weekend morning,solo,ADA/wheelchair,cultural,yes,high,low,high,5,non-English,rain,senior,female,125k+,40.805739,-73.940643
+P0012,outer suburb,no car,low,high,weekend afternoon,solo,ADA/wheelchair,nightlife,no,high,low,high,5,non-English,heat,old adult,female,75k-125k,40.755125,-74.002480
+P0013,urban core,carshare,high,low,weekend afternoon,older adult pair,none,cultural,yes,low,high,med,30,English,rain,old adult,male,35-75k,40.706012,-73.935477
+P0014,rural fringe,carshare,medium,medium,weekday evening,mixed friends 20-30,stroller-friendly,food,no,low,low,med,30,English,heat,young adult,male,35-75k,40.718300,-73.950065
+P0015,urban core,no car,high,high,weekend afternoon,family w/ small kids,none,food,yes,high,low,high,15,English,heat,young adult,male,125k+,40.804199,-73.952734
+P0016,inner suburb,carshare,low,high,weekend afternoon,mixed friends 20-30,ADA/wheelchair,food,no,high,low,med,5,English,heat,young adult,female,35-75k,40.705570,-74.009053
+P0017,outer suburb,carshare,low,low,weekend afternoon,mixed friends 20-30,ADA/wheelchair,nightlife,no,low,high,low,15,English,clear,mid adult,male,<35k,40.792347,-73.952522
+P0018,urban core,own car,high,high,weekend morning,solo,stroller-friendly,cultural,no,low,high,high,5,non-English,heat,old adult,male,125k+,40.801733,-73.964740
+P0019,rural fringe,no car,low,low,weekday evening,solo,stroller-friendly,food,no,low,high,med,5,English,heat,old adult,male,35-75k,40.727305,-73.955816
+P0020,urban core,carshare,high,medium,weekend afternoon,mixed friends 20-30,none,nature,no,low,high,low,5,non-English,heat,mid adult,male,75k-125k,40.816374,-73.948356
+P0021,inner suburb,no car,medium,high,weekend morning,mixed friends 20-30,stroller-friendly,nature,yes,high,high,high,5,English,rain,mid adult,female,125k+,40.713269,-73.962081
+P0022,outer suburb,carshare,low,medium,weekend afternoon,mixed friends 20-30,stroller-friendly,food,yes,low,low,high,30,non-English,clear,young adult,male,75k-125k,40.718874,-73.988979
+P0023,rural fringe,carshare,high,high,weekend morning,older adult pair,ADA/wheelchair,food,yes,low,low,high,5,English,rain,mid adult,male,<35k,40.753320,-73.966503
+P0024,rural fringe,no car,low,low,weekday evening,older adult pair,none,food,no,low,high,med,5,non-English,clear,old adult,male,<35k,40.752887,-73.987344
+P0025,urban core,own car,medium,high,weekday evening,older adult pair,none,food,yes,low,high,med,15,English,heat,old adult,female,75k-125k,40.819061,-73.940846
+P0026,outer suburb,carshare,low,high,weekday evening,older adult pair,ADA/wheelchair,cultural,yes,high,low,med,5,English,rain,old adult,female,35-75k,40.774556,-73.989651
+P0027,urban core,carshare,low,medium,weekday evening,family w/ small kids,ADA/wheelchair,food,no,high,low,low,5,English,rain,young adult,female,75k-125k,40.761500,-73.997803
+P0028,urban core,carshare,high,medium,weekday evening,solo,stroller-friendly,nightlife,no,low,high,low,30,non-English,clear,young adult,male,35-75k,40.811367,-73.954010
+P0029,urban core,own car,low,high,weekend morning,family w/ small kids,stroller-friendly,food,yes,low,high,low,15,English,clear,mid adult,female,125k+,40.805189,-73.951193
+P0030,inner suburb,own car,high,medium,weekday evening,mixed friends 20-30,ADA/wheelchair,cultural,no,low,low,high,15,English,rain,young adult,male,125k+,40.740619,-73.989442
+P0031,outer suburb,no car,medium,medium,weekend afternoon,mixed friends 20-30,stroller-friendly,nightlife,yes,low,low,high,15,English,clear,young adult,male,75k-125k,40.754351,-73.976975
+P0032,urban core,no car,high,high,weekday evening,older adult pair,stroller-friendly,nature,no,high,high,low,30,non-English,clear,mid adult,female,75k-125k,40.744116,-74.008555
+P0033,outer suburb,own car,medium,high,weekend morning,older adult pair,stroller-friendly,cultural,yes,high,high,low,15,English,heat,senior,male,75k-125k,40.736284,-73.958520
+P0034,rural fringe,no car,high,medium,weekend morning,older adult pair,ADA/wheelchair,cultural,yes,high,high,high,5,English,heat,old adult,male,75k-125k,40.756610,-73.937327
+P0035,urban core,own car,low,low,weekday evening,mixed friends 20-30,ADA/wheelchair,cultural,yes,high,low,high,30,non-English,clear,young adult,male,75k-125k,40.714372,-73.946070
+P0036,rural fringe,carshare,low,low,weekend afternoon,older adult pair,ADA/wheelchair,nightlife,yes,high,high,low,5,English,clear,senior,male,75k-125k,40.791675,-73.948984
+P0037,inner suburb,carshare,low,high,weekend morning,solo,none,cultural,yes,low,low,high,30,non-English,rain,old adult,male,125k+,40.709826,-74.010017
+P0038,inner suburb,own car,medium,medium,weekend afternoon,mixed friends 20-30,ADA/wheelchair,food,no,low,high,high,30,non-English,heat,young adult,female,75k-125k,40.737173,-73.988628
+P0039,inner suburb,carshare,high,medium,weekday evening,family w/ small kids,none,nightlife,yes,low,low,high,30,English,rain,mid adult,male,35-75k,40.803434,-73.933081
+P0040,rural fringe,own car,low,high,weekend morning,older adult pair,ADA/wheelchair,cultural,no,low,low,low,15,non-English,clear,senior,female,75k-125k,40.716419,-73.994750
+P0041,urban core,no car,high,medium,weekday evening,mixed friends 20-30,stroller-friendly,nightlife,yes,low,low,high,15,English,rain,young adult,male,35-75k,40.757779,-73.973439
+P0042,outer suburb,carshare,low,medium,weekend morning,family w/ small kids,ADA/wheelchair,nightlife,yes,low,low,high,15,English,heat,mid adult,female,125k+,40.724555,-74.001940
+P0043,outer suburb,no car,medium,high,weekend morning,mixed friends 20-30,stroller-friendly,cultural,yes,low,high,low,30,non-English,heat,young adult,female,75k-125k,40.778813,-73.974080
+P0044,inner suburb,carshare,medium,high,weekend afternoon,family w/ small kids,stroller-friendly,nightlife,no,low,high,med,5,non-English,heat,mid adult,female,75k-125k,40.716981,-73.994463
+P0045,outer suburb,no car,high,medium,weekend afternoon,solo,none,nightlife,yes,high,high,med,5,English,clear,mid adult,male,35-75k,40.814798,-73.936190
+P0046,urban core,carshare,high,high,weekday evening,mixed friends 20-30,stroller-friendly,food,no,low,low,high,30,English,clear,young adult,male,125k+,40.720846,-74.000662
+P0047,rural fringe,own car,high,medium,weekend morning,mixed friends 20-30,none,nature,yes,high,high,low,15,English,rain,young adult,female,125k+,40.706388,-74.007136
+P0048,outer suburb,carshare,low,low,weekend morning,older adult pair,stroller-friendly,food,yes,high,high,high,5,English,rain,old adult,male,<35k,40.818234,-73.952721
+P0049,inner suburb,no car,low,high,weekday evening,older adult pair,ADA/wheelchair,food,no,low,high,high,15,English,clear,mid adult,female,75k-125k,40.808940,-73.948248
+P0050,urban core,carshare,high,high,weekend morning,mixed friends 20-30,ADA/wheelchair,food,no,high,high,med,15,non-English,rain,young adult,female,125k+,40.703191,-73.959800
+P0051,inner suburb,carshare,high,low,weekend morning,family w/ small kids,none,nature,no,high,high,med,30,English,rain,mid adult,male,<35k,40.722182,-73.990892
+P0052,inner suburb,own car,high,low,weekend afternoon,older adult pair,none,cultural,no,high,high,med,15,non-English,clear,old adult,male,35-75k,40.702288,-74.009495
+P0053,urban core,carshare,medium,low,weekday evening,older adult pair,ADA/wheelchair,nature,no,low,high,low,5,English,rain,old adult,male,75k-125k,40.752972,-73.930496
+P0054,outer suburb,no car,medium,high,weekend morning,solo,none,nightlife,yes,low,high,med,15,non-English,heat,teen,male,75k-125k,40.747640,-73.976759
+P0055,inner suburb,no car,high,high,weekday evening,mixed friends 20-30,stroller-friendly,nature,yes,high,high,low,15,non-English,clear,young adult,male,125k+,40.740553,-73.938203
+P0056,urban core,carshare,low,medium,weekend afternoon,family w/ small kids,none,cultural,yes,low,high,high,15,English,heat,mid adult,male,125k+,40.750881,-73.978657
+P0057,outer suburb,own car,medium,low,weekend morning,older adult pair,ADA/wheelchair,nature,no,low,low,high,30,non-English,heat,old adult,male,<35k,40.773139,-73.966533
+P0058,outer suburb,own car,low,medium,weekday evening,older adult pair,none,food,no,high,high,med,15,English,clear,mid adult,female,35-75k,40.703201,-73.989580
+P0059,rural fringe,carshare,high,low,weekend afternoon,mixed friends 20-30,stroller-friendly,nightlife,yes,high,high,high,15,English,clear,young adult,female,35-75k,40.702264,-73.992848
+P0060,outer suburb,no car,low,high,weekday evening,mixed friends 20-30,none,cultural,yes,high,high,med,30,non-English,rain,young adult,male,125k+,40.769125,-73.931323
+P0061,outer suburb,own car,high,high,weekend morning,family w/ small kids,ADA/wheelchair,cultural,yes,low,high,low,15,English,rain,mid adult,female,35-75k,40.777052,-73.982001
+P0062,urban core,no car,medium,medium,weekend afternoon,older adult pair,stroller-friendly,nature,no,high,high,low,30,non-English,rain,mid adult,male,<35k,40.749300,-73.949415
+P0063,outer suburb,own car,high,high,weekend afternoon,family w/ small kids,stroller-friendly,nightlife,yes,high,high,high,5,non-English,rain,mid adult,male,125k+,40.717589,-73.955844
+P0064,inner suburb,carshare,high,medium,weekday evening,mixed friends 20-30,none,cultural,no,low,high,med,30,English,heat,young adult,male,35-75k,40.775373,-73.987714
+P0065,rural fringe,own car,medium,low,weekend morning,family w/ small kids,ADA/wheelchair,cultural,yes,high,low,high,5,non-English,heat,mid adult,male,75k-125k,40.750275,-73.939767
+P0066,rural fringe,own car,low,low,weekend afternoon,family w/ small kids,ADA/wheelchair,nature,no,low,low,med,5,non-English,clear,young adult,female,35-75k,40.751051,-73.946470
+P0067,rural fringe,carshare,medium,high,weekday evening,family w/ small kids,none,nightlife,no,high,low,low,5,English,heat,mid adult,female,125k+,40.747706,-73.956947
+P0068,inner suburb,carshare,low,medium,weekend morning,mixed friends 20-30,stroller-friendly,nature,yes,low,low,low,30,non-English,heat,young adult,female,<35k,40.711186,-74.003114
+P0069,rural fringe,carshare,high,low,weekend morning,solo,none,nature,yes,low,low,high,5,non-English,heat,mid adult,female,<35k,40.757963,-73.985534
+P0070,inner suburb,own car,medium,low,weekend morning,mixed friends 20-30,none,nightlife,yes,low,high,med,5,English,clear,young adult,female,35-75k,40.715374,-73.958241
+P0071,urban core,carshare,medium,high,weekend morning,solo,none,nightlife,yes,low,high,med,30,English,clear,teen,female,125k+,40.757912,-73.989296
+P0072,urban core,carshare,medium,low,weekend morning,mixed friends 20-30,none,food,yes,high,low,high,30,English,clear,young adult,female,35-75k,40.748891,-73.975848
+P0073,rural fringe,own car,medium,medium,weekend morning,family w/ small kids,stroller-friendly,cultural,no,high,high,med,30,English,clear,mid adult,female,75k-125k,40.723488,-73.951643
+P0074,outer suburb,no car,high,medium,weekend afternoon,mixed friends 20-30,none,food,no,low,high,low,5,non-English,rain,young adult,male,75k-125k,40.756503,-73.960718
+P0075,urban core,no car,low,high,weekend morning,mixed friends 20-30,none,nightlife,no,low,high,med,5,non-English,heat,young adult,female,125k+,40.714095,-73.997428
+P0076,outer suburb,carshare,high,low,weekday evening,family w/ small kids,none,nature,yes,high,low,med,15,English,heat,old adult,female,35-75k,40.781719,-73.980982
+P0077,outer suburb,carshare,low,high,weekday evening,older adult pair,none,food,no,low,high,low,15,English,heat,senior,male,35-75k,40.721807,-74.006442
+P0078,rural fringe,own car,medium,medium,weekend morning,solo,none,nature,yes,low,high,high,30,English,clear,senior,male,75k-125k,40.796070,-73.945429
+P0079,inner suburb,carshare,low,high,weekday evening,solo,none,nightlife,no,high,low,low,15,non-English,rain,young adult,female,75k-125k,40.787684,-73.981152
+P0080,rural fringe,carshare,medium,medium,weekend morning,solo,none,nightlife,yes,low,low,high,15,non-English,clear,young adult,female,35-75k,40.755833,-73.970776
+P0081,outer suburb,carshare,high,low,weekday evening,family w/ small kids,ADA/wheelchair,food,no,high,low,low,5,non-English,heat,mid adult,female,75k-125k,40.715374,-73.958241
+P0082,outer suburb,no car,medium,low,weekend afternoon,solo,ADA/wheelchair,food,yes,high,high,low,15,English,rain,young adult,female,<35k,40.803934,-73.948205
+P0083,outer suburb,carshare,medium,high,weekday evening,family w/ small kids,none,nightlife,yes,low,high,high,5,English,clear,mid adult,female,75k-125k,40.713771,-73.958041
+P0084,inner suburb,no car,low,high,weekend afternoon,family w/ small kids,ADA/wheelchair,nature,no,low,low,low,5,non-English,clear,young adult,male,125k+,40.796561,-73.972267
+P0085,rural fringe,own car,low,high,weekday evening,older adult pair,none,cultural,no,high,low,high,30,non-English,clear,old adult,female,35-75k,40.767871,-73.935911
+P0086,rural fringe,no car,high,medium,weekend morning,mixed friends 20-30,none,nightlife,no,high,high,low,30,English,heat,young adult,male,125k+,40.781431,-73.954181
+P0087,outer suburb,own car,high,low,weekday evening,mixed friends 20-30,none,food,no,low,low,med,5,non-English,rain,young adult,male,35-75k,40.745779,-73.982218
+P0088,outer suburb,own car,high,medium,weekend morning,older adult pair,ADA/wheelchair,nightlife,no,low,high,high,15,non-English,rain,senior,female,125k+,40.727753,-73.991229
+P0089,urban core,carshare,medium,high,weekend afternoon,older adult pair,none,food,yes,low,high,high,30,non-English,clear,senior,male,125k+,40.727273,-73.982654
+P0090,urban core,no car,high,high,weekend afternoon,mixed friends 20-30,ADA/wheelchair,nature,yes,low,low,low,15,English,clear,young adult,male,125k+,40.771253,-73.985939
+P0091,urban core,carshare,low,medium,weekday evening,mixed friends 20-30,none,food,yes,high,low,med,5,non-English,clear,mid adult,male,75k-125k,40.711386,-74.008207
+P0092,rural fringe,own car,low,high,weekday evening,mixed friends 20-30,stroller-friendly,nature,no,high,high,med,30,non-English,rain,mid adult,male,75k-125k,40.792982,-73.952059
+P0093,outer suburb,carshare,high,medium,weekend morning,family w/ small kids,ADA/wheelchair,nature,no,high,low,low,5,non-English,clear,mid adult,female,75k-125k,40.799244,-73.962873
+P0094,outer suburb,no car,low,high,weekday evening,solo,none,nature,no,high,high,high,5,non-English,rain,mid adult,male,75k-125k,40.702051,-73.952551
+P0095,urban core,own car,medium,high,weekday evening,family w/ small kids,ADA/wheelchair,nightlife,no,high,high,high,30,English,heat,mid adult,female,<35k,40.786605,-73.968393
+P0096,rural fringe,own car,low,low,weekday evening,mixed friends 20-30,stroller-friendly,nature,yes,low,high,high,5,non-English,rain,teen,male,35-75k,40.725162,-73.995881
+P0097,inner suburb,own car,high,low,weekday evening,mixed friends 20-30,ADA/wheelchair,cultural,yes,high,low,low,5,English,clear,young adult,male,75k-125k,40.704819,-74.016701
+P0098,inner suburb,no car,medium,low,weekend morning,family w/ small kids,ADA/wheelchair,nightlife,yes,high,high,high,5,non-English,clear,young adult,female,35-75k,40.708977,-73.997833
+P0099,rural fringe,carshare,high,medium,weekday evening,older adult pair,ADA/wheelchair,nightlife,yes,low,low,high,30,English,rain,old adult,female,75k-125k,40.801884,-73.953393
+P0100,outer suburb,no car,low,medium,weekday evening,solo,none,cultural,no,high,high,low,15,non-English,clear,teen,male,35-75k,40.809105,-73.944616
+P0101,outer suburb,carshare,high,medium,weekend morning,mixed friends 20-30,ADA/wheelchair,nature,no,high,high,med,30,non-English,clear,mid adult,male,75k-125k,40.732421,-74.010236
+P0102,urban core,carshare,high,high,weekend afternoon,older adult pair,stroller-friendly,nightlife,yes,low,low,med,5,non-English,rain,senior,female,75k-125k,40.709244,-73.995933
+P0103,urban core,no car,low,low,weekend afternoon,family w/ small kids,ADA/wheelchair,nature,yes,high,high,high,15,non-English,clear,old adult,female,35-75k,40.730971,-73.961313
+P0104,outer suburb,carshare,high,high,weekend morning,older adult pair,ADA/wheelchair,nature,no,high,high,low,15,non-English,heat,senior,male,125k+,40.725160,-73.946593
+P0105,urban core,no car,medium,medium,weekend morning,family w/ small kids,stroller-friendly,food,no,high,low,med,15,non-English,rain,mid adult,male,35-75k,40.762329,-73.970354
+P0106,urban core,no car,high,medium,weekday evening,family w/ small kids,none,cultural,no,low,low,low,5,non-English,clear,teen,female,75k-125k,40.743160,-74.008545
+P0107,urban core,own car,medium,low,weekend afternoon,mixed friends 20-30,ADA/wheelchair,food,no,high,high,med,30,non-English,rain,young adult,female,35-75k,40.780071,-73.947029
+P0108,outer suburb,carshare,low,medium,weekend afternoon,solo,ADA/wheelchair,cultural,no,high,low,med,15,non-English,clear,teen,female,75k-125k,40.728234,-74.002360
+P0109,rural fringe,no car,medium,medium,weekend afternoon,older adult pair,none,food,yes,high,low,med,5,English,rain,old adult,male,35-75k,40.774614,-73.948082
+P0110,outer suburb,own car,high,high,weekday evening,family w/ small kids,none,food,yes,low,low,low,5,non-English,rain,young adult,male,125k+,40.806302,-73.937964
+P0111,rural fringe,own car,low,medium,weekday evening,solo,ADA/wheelchair,nightlife,yes,low,low,med,5,non-English,heat,mid adult,male,<35k,40.730739,-73.948789
+P0112,urban core,own car,low,medium,weekend morning,solo,none,cultural,no,high,low,high,15,English,rain,mid adult,male,75k-125k,40.714538,-73.951700
+P0113,outer suburb,no car,medium,medium,weekday evening,older adult pair,stroller-friendly,cultural,yes,high,high,high,5,English,rain,old adult,male,125k+,40.727828,-73.994750
+P0114,inner suburb,carshare,high,medium,weekday evening,family w/ small kids,stroller-friendly,cultural,yes,low,low,med,15,non-English,heat,young adult,male,75k-125k,40.786193,-73.981442
+P0115,rural fringe,carshare,low,medium,weekend morning,mixed friends 20-30,none,nature,no,high,high,low,30,English,heat,young adult,male,75k-125k,40.804206,-73.968647
+P0116,rural fringe,no car,medium,high,weekend afternoon,solo,stroller-friendly,nature,no,low,low,med,15,English,rain,old adult,male,125k+,40.801074,-73.971271
+P0117,inner suburb,own car,medium,low,weekend morning,family w/ small kids,none,food,yes,high,low,low,30,English,rain,mid adult,male,35-75k,40.724109,-73.990958
+P0118,urban core,own car,low,medium,weekday evening,family w/ small kids,ADA/wheelchair,food,yes,high,high,low,5,English,clear,mid adult,male,35-75k,40.733071,-74.006383
+P0119,outer suburb,no car,low,high,weekend afternoon,family w/ small kids,stroller-friendly,cultural,no,high,high,med,30,English,heat,mid adult,male,75k-125k,40.715813,-73.940020
+P0120,inner suburb,own car,low,high,weekend morning,mixed friends 20-30,none,cultural,yes,high,low,med,15,non-English,clear,young adult,male,75k-125k,40.739691,-73.934585
+P0121,inner suburb,own car,low,low,weekend afternoon,older adult pair,ADA/wheelchair,cultural,yes,low,low,high,5,English,heat,old adult,male,35-75k,40.813428,-73.962436
+P0122,outer suburb,no car,medium,medium,weekend morning,older adult pair,ADA/wheelchair,nightlife,no,high,low,med,5,English,clear,old adult,male,75k-125k,40.809039,-73.944466
+P0123,urban core,no car,high,low,weekend morning,solo,none,cultural,no,low,high,high,5,English,rain,mid adult,male,35-75k,40.717113,-74.014545
+P0124,outer suburb,own car,low,high,weekend morning,older adult pair,ADA/wheelchair,nature,no,low,high,high,5,English,rain,senior,male,75k-125k,40.775175,-73.989196
+P0125,urban core,own car,low,high,weekend afternoon,mixed friends 20-30,none,nature,yes,high,low,med,5,English,heat,young adult,male,75k-125k,40.724408,-74.005946
+P0126,inner suburb,no car,medium,low,weekend morning,mixed friends 20-30,ADA/wheelchair,nightlife,yes,low,low,med,15,English,heat,young adult,male,<35k,40.779284,-73.981116
+P0127,urban core,own car,medium,high,weekday evening,older adult pair,none,nature,no,high,high,med,15,non-English,heat,old adult,female,75k-125k,40.730074,-73.987524
+P0128,outer suburb,own car,high,medium,weekend afternoon,older adult pair,ADA/wheelchair,nature,no,low,low,med,30,English,heat,senior,male,75k-125k,40.740929,-73.933385
+P0129,inner suburb,no car,low,medium,weekend morning,older adult pair,ADA/wheelchair,food,no,high,low,low,30,non-English,rain,old adult,female,35-75k,40.710223,-74.007744
+P0130,inner suburb,carshare,high,medium,weekend afternoon,solo,none,cultural,yes,high,high,low,5,non-English,heat,young adult,female,75k-125k,40.726602,-74.007431
+P0131,inner suburb,no car,high,high,weekday evening,solo,ADA/wheelchair,nature,no,high,high,med,5,English,heat,mid adult,female,<35k,40.817796,-73.935950
+P0132,urban core,own car,low,high,weekend afternoon,family w/ small kids,none,nightlife,no,high,low,med,5,non-English,rain,mid adult,female,75k-125k,40.769078,-73.961107
+P0133,rural fringe,no car,low,low,weekday evening,older adult pair,stroller-friendly,nature,no,high,high,high,30,English,rain,senior,female,<35k,40.719290,-73.945399
+P0134,outer suburb,carshare,medium,low,weekend afternoon,older adult pair,none,cultural,no,high,high,low,5,non-English,clear,old adult,male,<35k,40.732318,-74.001663
+P0135,inner suburb,no car,high,medium,weekend afternoon,older adult pair,ADA/wheelchair,cultural,yes,low,low,high,30,English,clear,senior,male,35-75k,40.723441,-74.009538
+P0136,urban core,own car,low,low,weekday evening,family w/ small kids,none,nightlife,yes,high,high,med,30,non-English,rain,young adult,male,35-75k,40.717675,-73.985989
+P0137,outer suburb,own car,low,medium,weekday evening,family w/ small kids,none,food,no,low,low,high,30,English,rain,mid adult,female,75k-125k,40.710901,-73.943788
+P0138,urban core,no car,medium,low,weekday evening,mixed friends 20-30,stroller-friendly,cultural,no,high,high,high,15,non-English,heat,young adult,male,35-75k,40.720150,-73.937829
+P0139,inner suburb,own car,medium,medium,weekday evening,older adult pair,ADA/wheelchair,food,yes,high,high,low,15,non-English,clear,mid adult,female,75k-125k,40.757708,-73.969407
+P0140,inner suburb,no car,medium,medium,weekday evening,mixed friends 20-30,none,nightlife,yes,high,low,high,5,English,heat,young adult,male,75k-125k,40.718417,-73.961620
+P0141,rural fringe,own car,low,medium,weekend afternoon,solo,ADA/wheelchair,nightlife,yes,low,high,med,30,non-English,rain,teen,male,75k-125k,40.750341,-73.983175
+P0142,rural fringe,no car,low,medium,weekend afternoon,older adult pair,stroller-friendly,nightlife,yes,high,low,high,5,English,heat,old adult,female,75k-125k,40.813702,-73.930993
+P0143,urban core,no car,low,low,weekend morning,solo,none,food,no,high,low,high,15,English,heat,young adult,female,35-75k,40.733761,-73.937415
+P0144,urban core,carshare,medium,low,weekend afternoon,mixed friends 20-30,ADA/wheelchair,nightlife,no,low,low,low,30,non-English,rain,young adult,female,35-75k,40.772351,-73.946656
+P0145,urban core,own car,medium,medium,weekend afternoon,mixed friends 20-30,none,cultural,yes,high,low,low,15,English,clear,mid adult,female,35-75k,40.800073,-73.951037
+P0146,inner suburb,own car,medium,high,weekend morning,family w/ small kids,stroller-friendly,nightlife,no,low,high,low,30,non-English,clear,mid adult,male,125k+,40.779977,-73.986962
+P0147,urban core,carshare,high,low,weekday evening,family w/ small kids,none,nature,no,low,low,high,15,non-English,rain,young adult,female,<35k,40.730246,-74.001020
+P0148,rural fringe,carshare,medium,low,weekend afternoon,family w/ small kids,none,food,no,high,high,high,5,non-English,heat,mid adult,female,35-75k,40.744502,-73.975202
+P0149,inner suburb,own car,low,low,weekday evening,mixed friends 20-30,ADA/wheelchair,nightlife,yes,high,high,high,30,non-English,heat,young adult,female,75k-125k,40.715464,-73.949598
+P0150,inner suburb,carshare,low,medium,weekend morning,older adult pair,stroller-friendly,food,yes,low,low,low,30,non-English,clear,old adult,male,75k-125k,40.719999,-73.944211
+P0151,rural fringe,no car,high,medium,weekend afternoon,family w/ small kids,stroller-friendly,cultural,no,high,high,high,15,English,heat,mid adult,male,75k-125k,40.747706,-73.956947
+P0152,rural fringe,carshare,low,medium,weekday evening,family w/ small kids,ADA/wheelchair,cultural,yes,high,high,low,15,English,rain,senior,male,75k-125k,40.722979,-74.011503
+P0153,outer suburb,no car,high,low,weekend afternoon,older adult pair,none,food,yes,high,low,low,30,non-English,heat,mid adult,female,<35k,40.764921,-73.938603
+P0154,rural fringe,own car,low,medium,weekend afternoon,mixed friends 20-30,none,food,yes,high,high,high,5,non-English,clear,mid adult,female,35-75k,40.802548,-73.942988
+P0155,inner suburb,no car,medium,high,weekday evening,family w/ small kids,ADA/wheelchair,nature,yes,low,low,high,30,non-English,clear,mid adult,male,75k-125k,40.817178,-73.934466
+P0156,urban core,own car,high,high,weekend afternoon,family w/ small kids,ADA/wheelchair,nightlife,no,high,low,high,5,English,clear,mid adult,female,<35k,40.702132,-73.992581
+P0157,outer suburb,no car,high,high,weekend afternoon,solo,ADA/wheelchair,nightlife,no,high,low,med,30,English,rain,young adult,male,35-75k,40.774999,-73.961107
+P0158,rural fringe,own car,low,high,weekday evening,older adult pair,none,nature,no,high,low,high,15,non-English,clear,senior,male,125k+,40.724330,-73.955129
+P0159,inner suburb,no car,medium,high,weekend afternoon,mixed friends 20-30,none,food,no,low,high,high,15,non-English,heat,young adult,male,125k+,40.716921,-73.941845
+P0160,inner suburb,carshare,low,high,weekend afternoon,older adult pair,none,nightlife,no,high,low,high,15,English,rain,old adult,male,125k+,40.784666,-73.954060
+P0161,inner suburb,own car,medium,medium,weekday evening,older adult pair,ADA/wheelchair,food,yes,high,high,med,5,non-English,heat,old adult,male,125k+,40.761308,-74.001952
+P0162,outer suburb,no car,medium,low,weekday evening,solo,none,food,yes,low,high,low,5,non-English,clear,young adult,female,<35k,40.707751,-73.968402
+P0163,urban core,no car,high,high,weekend afternoon,older adult pair,ADA/wheelchair,nightlife,yes,high,high,high,30,non-English,heat,old adult,male,<35k,40.745128,-73.980670
+P0164,outer suburb,no car,high,low,weekday evening,solo,ADA/wheelchair,food,yes,high,low,low,30,non-English,rain,young adult,male,35-75k,40.760856,-73.998347
+P0165,urban core,own car,high,high,weekend morning,mixed friends 20-30,none,nature,yes,low,low,low,5,non-English,heat,mid adult,male,75k-125k,40.794913,-73.948556
+P0166,rural fringe,own car,medium,high,weekday evening,solo,none,nature,no,low,low,low,15,English,clear,young adult,female,125k+,40.796009,-73.935402
+P0167,urban core,no car,medium,medium,weekday evening,older adult pair,none,nightlife,no,low,high,low,30,English,clear,young adult,male,35-75k,40.750183,-73.939241
+P0168,urban core,carshare,medium,low,weekend morning,older adult pair,none,nightlife,yes,high,high,med,15,English,heat,mid adult,male,<35k,40.746277,-73.933268
+P0169,urban core,carshare,medium,medium,weekday evening,mixed friends 20-30,ADA/wheelchair,nature,yes,low,low,med,5,English,heat,young adult,female,35-75k,40.712481,-73.992280
+P0170,urban core,own car,high,low,weekday evening,older adult pair,stroller-friendly,nightlife,yes,high,low,low,15,non-English,heat,mid adult,male,35-75k,40.774221,-73.931821
+P0171,inner suburb,no car,high,high,weekend morning,solo,stroller-friendly,cultural,yes,high,low,low,15,English,heat,mid adult,female,125k+,40.746358,-73.939731
+P0172,outer suburb,carshare,medium,high,weekday evening,solo,stroller-friendly,cultural,yes,low,high,med,5,English,rain,old adult,male,125k+,40.802612,-73.930796
+P0173,outer suburb,no car,low,high,weekend morning,family w/ small kids,none,cultural,yes,low,high,low,5,English,clear,mid adult,female,75k-125k,40.718466,-73.952812
+P0174,rural fringe,no car,low,high,weekend morning,family w/ small kids,ADA/wheelchair,nightlife,yes,high,low,med,30,non-English,clear,mid adult,male,75k-125k,40.716179,-73.959504
+P0175,rural fringe,no car,high,high,weekend afternoon,older adult pair,none,nightlife,yes,low,high,high,30,non-English,heat,old adult,female,<35k,40.716985,-73.960778
+P0176,inner suburb,own car,high,low,weekday evening,solo,stroller-friendly,nightlife,no,low,low,low,15,English,clear,mid adult,female,<35k,40.720385,-74.006014
+P0177,inner suburb,own car,high,high,weekday evening,mixed friends 20-30,none,cultural,no,low,high,high,5,English,clear,young adult,female,35-75k,40.717675,-73.985989
+P0178,urban core,no car,medium,high,weekday evening,mixed friends 20-30,ADA/wheelchair,cultural,yes,low,low,med,15,non-English,rain,young adult,male,125k+,40.755987,-73.976964
+P0179,outer suburb,no car,high,low,weekend morning,mixed friends 20-30,ADA/wheelchair,cultural,no,low,low,med,15,English,rain,young adult,male,<35k,40.724658,-73.948112
+P0180,outer suburb,own car,medium,low,weekend afternoon,family w/ small kids,none,nature,no,low,high,med,5,English,rain,old adult,female,125k+,40.728851,-74.005287
+P0181,urban core,carshare,medium,medium,weekend afternoon,family w/ small kids,none,nature,no,high,low,low,15,English,heat,young adult,female,75k-125k,40.747774,-73.985038
+P0182,urban core,own car,low,low,weekday evening,mixed friends 20-30,stroller-friendly,cultural,no,low,low,low,5,non-English,heat,young adult,female,<35k,40.740886,-73.990083
+P0183,outer suburb,no car,medium,high,weekday evening,older adult pair,none,nature,no,low,low,high,15,English,heat,senior,female,35-75k,40.708354,-73.960990
+P0184,outer suburb,carshare,low,low,weekend afternoon,older adult pair,none,nature,no,high,low,low,15,English,rain,senior,male,75k-125k,40.703211,-74.012638
+P0185,inner suburb,no car,low,medium,weekend afternoon,family w/ small kids,stroller-friendly,nature,no,high,high,high,15,English,rain,mid adult,female,35-75k,40.741545,-73.987506
+P0186,rural fringe,no car,low,medium,weekend morning,mixed friends 20-30,ADA/wheelchair,food,yes,low,low,low,30,English,clear,young adult,female,35-75k,40.719679,-73.992176
+P0187,outer suburb,carshare,medium,high,weekend afternoon,family w/ small kids,stroller-friendly,cultural,no,low,low,high,30,English,clear,mid adult,male,125k+,40.764243,-73.998503
+P0188,inner suburb,no car,low,low,weekday evening,older adult pair,none,cultural,no,high,low,med,15,English,clear,old adult,male,35-75k,40.744061,-74.006811
+P0189,outer suburb,carshare,medium,low,weekday evening,solo,none,nature,yes,low,low,high,15,non-English,clear,senior,female,35-75k,40.761652,-73.970848
+P0190,outer suburb,own car,medium,low,weekend afternoon,mixed friends 20-30,stroller-friendly,cultural,yes,low,low,med,15,non-English,rain,young adult,male,<35k,40.714701,-73.992856
+P0191,rural fringe,carshare,high,low,weekend morning,family w/ small kids,stroller-friendly,nightlife,yes,low,high,med,30,English,heat,mid adult,male,<35k,40.779813,-73.984481
+P0192,urban core,own car,high,medium,weekend morning,solo,ADA/wheelchair,food,yes,low,high,med,5,English,rain,old adult,male,75k-125k,40.734491,-74.001392
+P0193,urban core,no car,low,low,weekday evening,mixed friends 20-30,stroller-friendly,nature,no,high,high,high,30,English,rain,young adult,female,<35k,40.810325,-73.953623
+P0194,rural fringe,no car,low,low,weekday evening,family w/ small kids,ADA/wheelchair,nightlife,yes,low,high,low,15,non-English,clear,mid adult,female,<35k,40.776281,-73.957939
+P0195,outer suburb,carshare,low,medium,weekend morning,family w/ small kids,none,nature,yes,low,high,med,30,non-English,clear,mid adult,female,75k-125k,40.705439,-73.956337
+P0196,rural fringe,carshare,medium,medium,weekday evening,older adult pair,stroller-friendly,nature,yes,low,low,low,5,non-English,rain,old adult,female,35-75k,40.760251,-73.961502
+P0197,rural fringe,own car,low,high,weekend morning,mixed friends 20-30,stroller-friendly,food,no,low,low,med,5,non-English,clear,mid adult,female,125k+,40.749801,-73.987746
+P0198,outer suburb,own car,medium,high,weekend morning,solo,ADA/wheelchair,cultural,yes,high,high,high,15,English,rain,old adult,male,125k+,40.802694,-73.933410
+P0199,rural fringe,carshare,medium,high,weekend afternoon,mixed friends 20-30,none,nightlife,no,high,low,low,5,English,clear,young adult,female,75k-125k,40.725833,-74.011186
+P0200,outer suburb,carshare,medium,high,weekend morning,mixed friends 20-30,stroller-friendly,nightlife,no,high,low,low,15,English,rain,young adult,female,125k+,40.775543,-73.976463
+P0201,rural fringe,no car,low,high,weekend afternoon,solo,ADA/wheelchair,cultural,yes,low,low,med,5,English,clear,old adult,female,125k+,40.744329,-73.958510
+P0202,rural fringe,own car,medium,medium,weekday evening,mixed friends 20-30,ADA/wheelchair,nightlife,yes,high,high,low,30,English,rain,mid adult,female,35-75k,40.737173,-73.988628
+P0203,outer suburb,own car,medium,high,weekend morning,mixed friends 20-30,none,nature,yes,high,low,low,30,English,clear,old adult,male,<35k,40.716969,-73.948985
+P0204,inner suburb,no car,high,medium,weekend morning,family w/ small kids,stroller-friendly,food,no,high,high,med,5,English,clear,mid adult,male,75k-125k,40.742832,-73.988662
+P0205,inner suburb,carshare,low,low,weekend morning,family w/ small kids,stroller-friendly,food,yes,high,low,high,5,non-English,heat,mid adult,male,75k-125k,40.763428,-73.992701
+P0206,inner suburb,carshare,high,low,weekday evening,family w/ small kids,stroller-friendly,food,yes,high,low,low,5,non-English,rain,young adult,female,<35k,40.764112,-73.966817
+P0207,urban core,carshare,high,high,weekend afternoon,mixed friends 20-30,ADA/wheelchair,nature,no,high,high,high,5,non-English,clear,teen,female,35-75k,40.765777,-73.963010
+P0208,urban core,carshare,high,low,weekend afternoon,solo,stroller-friendly,food,no,high,low,high,15,non-English,clear,young adult,female,125k+,40.795733,-73.932661
+P0209,rural fringe,no car,medium,low,weekday evening,family w/ small kids,ADA/wheelchair,nature,yes,high,low,med,15,English,clear,mid adult,female,35-75k,40.762348,-73.982347
+P0210,rural fringe,no car,medium,medium,weekend afternoon,mixed friends 20-30,none,food,no,low,high,med,15,non-English,rain,young adult,female,<35k,40.743889,-73.981565
+P0211,inner suburb,own car,medium,medium,weekend morning,solo,none,nightlife,no,low,low,high,15,non-English,rain,teen,male,35-75k,40.774406,-73.965608
+P0212,outer suburb,no car,low,low,weekday evening,mixed friends 20-30,stroller-friendly,cultural,no,low,low,high,5,English,clear,mid adult,male,35-75k,40.743637,-73.951180
+P0213,outer suburb,own car,medium,medium,weekend afternoon,mixed friends 20-30,none,nightlife,no,high,high,med,5,non-English,clear,young adult,female,75k-125k,40.719246,-73.954061
+P0214,urban core,carshare,medium,medium,weekend morning,family w/ small kids,stroller-friendly,cultural,no,high,low,med,5,English,clear,mid adult,female,35-75k,40.769349,-73.995069
+P0215,outer suburb,carshare,medium,low,weekday evening,mixed friends 20-30,stroller-friendly,food,yes,high,low,med,30,English,clear,young adult,male,35-75k,40.723189,-74.007217
+P0216,urban core,own car,high,medium,weekend morning,family w/ small kids,stroller-friendly,food,no,high,low,high,30,non-English,heat,young adult,female,75k-125k,40.754762,-73.936789
+P0217,urban core,carshare,low,high,weekend morning,mixed friends 20-30,ADA/wheelchair,nature,yes,high,high,med,15,English,clear,young adult,male,75k-125k,40.789628,-73.940064
+P0218,outer suburb,own car,medium,medium,weekday evening,family w/ small kids,stroller-friendly,nature,no,high,low,low,30,English,clear,young adult,female,75k-125k,40.712544,-74.007668
+P0219,outer suburb,own car,high,low,weekend afternoon,solo,stroller-friendly,nature,no,low,low,low,30,English,heat,old adult,male,35-75k,40.717329,-73.999448
+P0220,urban core,no car,high,medium,weekend morning,family w/ small kids,stroller-friendly,food,no,low,low,high,15,non-English,clear,mid adult,male,125k+,40.729246,-73.937363
+P0221,inner suburb,no car,medium,low,weekend afternoon,solo,none,cultural,no,low,low,low,5,English,rain,young adult,female,35-75k,40.757129,-73.971904
+P0222,rural fringe,own car,high,low,weekend morning,solo,none,nightlife,no,high,low,low,5,non-English,clear,young adult,male,35-75k,40.728810,-73.995061
+P0223,outer suburb,own car,low,medium,weekday evening,solo,stroller-friendly,nightlife,yes,high,low,med,30,English,rain,old adult,male,125k+,40.755391,-73.935040
+P0224,outer suburb,no car,high,medium,weekday evening,family w/ small kids,none,nightlife,yes,high,high,low,15,non-English,heat,mid adult,female,75k-125k,40.743275,-73.988325
+P0225,rural fringe,carshare,high,high,weekday evening,solo,none,nature,yes,high,high,high,15,non-English,clear,old adult,male,35-75k,40.700017,-73.949682
+P0226,inner suburb,carshare,low,medium,weekend morning,mixed friends 20-30,stroller-friendly,nightlife,no,low,high,low,5,English,rain,young adult,male,35-75k,40.748707,-73.939440
+P0227,outer suburb,carshare,low,low,weekday evening,solo,stroller-friendly,food,yes,low,low,high,15,non-English,heat,mid adult,male,35-75k,40.773735,-73.964011
+P0228,urban core,no car,medium,medium,weekend afternoon,solo,ADA/wheelchair,nature,no,low,high,med,5,English,rain,young adult,female,35-75k,40.727073,-73.956930
+P0229,outer suburb,carshare,medium,low,weekend afternoon,solo,none,food,yes,high,low,high,30,non-English,heat,mid adult,female,<35k,40.768811,-73.952330
+P0230,outer suburb,carshare,high,low,weekend morning,solo,none,food,no,high,high,med,15,non-English,clear,mid adult,female,35-75k,40.797180,-73.969818
+P0231,rural fringe,own car,medium,low,weekend morning,family w/ small kids,ADA/wheelchair,food,no,low,high,med,30,English,heat,mid adult,male,35-75k,40.710208,-73.996505
+P0232,urban core,no car,high,medium,weekend afternoon,solo,ADA/wheelchair,nature,yes,low,low,med,30,English,clear,young adult,female,35-75k,40.756875,-73.944350
+P0233,outer suburb,no car,high,medium,weekend morning,mixed friends 20-30,none,nature,yes,high,low,high,30,non-English,rain,young adult,male,35-75k,40.815945,-73.943130
+P0234,inner suburb,own car,high,medium,weekday evening,solo,none,nature,yes,high,high,high,5,English,rain,old adult,male,75k-125k,40.795585,-73.950158
+P0235,rural fringe,carshare,medium,high,weekend afternoon,older adult pair,stroller-friendly,food,yes,low,low,low,5,English,rain,old adult,female,75k-125k,40.700429,-73.944386
+P0236,urban core,carshare,low,medium,weekend morning,solo,none,cultural,no,high,low,low,30,non-English,heat,mid adult,male,35-75k,40.815692,-73.948677
+P0237,rural fringe,own car,low,medium,weekday evening,solo,ADA/wheelchair,cultural,yes,low,low,med,5,non-English,heat,mid adult,female,35-75k,40.729104,-74.010560
+P0238,outer suburb,no car,medium,low,weekend morning,mixed friends 20-30,ADA/wheelchair,nature,no,low,low,high,5,English,heat,mid adult,female,75k-125k,40.710601,-73.966782
+P0239,urban core,carshare,high,high,weekday evening,older adult pair,none,nightlife,no,high,low,med,30,non-English,rain,young adult,male,75k-125k,40.724220,-73.930880
+P0240,inner suburb,carshare,low,high,weekday evening,solo,ADA/wheelchair,nature,no,low,high,low,30,English,heat,senior,male,125k+,40.703075,-73.956985
+P0241,inner suburb,carshare,medium,medium,weekend afternoon,family w/ small kids,stroller-friendly,nature,yes,low,low,high,5,non-English,rain,mid adult,male,<35k,40.712163,-73.959057
+P0242,rural fringe,no car,high,high,weekend morning,older adult pair,none,food,yes,high,low,low,30,non-English,rain,old adult,female,75k-125k,40.719103,-73.990281
+P0243,inner suburb,no car,low,low,weekend morning,family w/ small kids,none,nightlife,no,low,low,low,30,non-English,rain,mid adult,female,<35k,40.717894,-73.989478
+P0244,urban core,own car,high,low,weekend morning,older adult pair,ADA/wheelchair,cultural,yes,low,low,med,30,English,clear,old adult,female,75k-125k,40.717209,-73.990702
+P0245,outer suburb,own car,low,medium,weekend morning,solo,stroller-friendly,nightlife,yes,low,high,med,15,English,rain,old adult,female,75k-125k,40.716898,-73.986194
+P0246,rural fringe,no car,medium,medium,weekday evening,solo,stroller-friendly,nightlife,no,high,high,high,5,non-English,rain,senior,female,125k+,40.799858,-73.952473
+P0247,rural fringe,own car,medium,medium,weekend morning,family w/ small kids,none,nature,no,low,high,high,15,non-English,heat,mid adult,male,75k-125k,40.717109,-73.949869
+P0248,rural fringe,own car,medium,high,weekend afternoon,family w/ small kids,none,nature,yes,high,low,low,30,English,rain,young adult,male,125k+,40.760056,-73.941627
+P0249,outer suburb,carshare,low,high,weekend morning,solo,none,cultural,yes,high,high,low,30,English,heat,young adult,female,75k-125k,40.752242,-73.999467
+P0250,urban core,own car,low,low,weekend afternoon,solo,none,nightlife,no,low,high,high,30,English,clear,teen,female,<35k,40.713781,-73.998074
+P0251,outer suburb,own car,low,medium,weekend afternoon,older adult pair,none,nightlife,yes,low,low,med,15,non-English,rain,senior,female,<35k,40.702784,-73.946907
+P0252,outer suburb,carshare,medium,medium,weekday evening,family w/ small kids,ADA/wheelchair,cultural,yes,low,high,low,30,non-English,heat,mid adult,male,75k-125k,40.735926,-74.000722
+P0253,inner suburb,no car,medium,low,weekend morning,older adult pair,none,nature,yes,low,low,med,30,non-English,rain,old adult,male,35-75k,40.808909,-73.938341
+P0254,outer suburb,own car,high,high,weekend morning,solo,none,food,no,high,low,high,15,English,heat,young adult,female,75k-125k,40.735298,-73.987823
+P0255,inner suburb,carshare,low,medium,weekend afternoon,mixed friends 20-30,none,nightlife,no,low,low,low,15,English,heat,young adult,female,75k-125k,40.717878,-73.947590
+P0256,urban core,own car,medium,medium,weekend morning,solo,stroller-friendly,nightlife,no,high,low,low,5,English,clear,teen,female,75k-125k,40.713477,-73.947597
+P0257,inner suburb,own car,high,low,weekend morning,older adult pair,none,nightlife,no,high,low,low,5,English,clear,old adult,female,<35k,40.793012,-73.948012
+P0258,outer suburb,no car,low,medium,weekend afternoon,older adult pair,stroller-friendly,nature,yes,high,low,med,5,non-English,clear,old adult,male,35-75k,40.747546,-73.988333
+P0259,inner suburb,own car,medium,low,weekend afternoon,solo,stroller-friendly,nature,yes,high,low,low,5,non-English,heat,mid adult,female,<35k,40.755330,-73.991177
+P0260,rural fringe,carshare,medium,low,weekend afternoon,family w/ small kids,stroller-friendly,cultural,yes,high,high,high,15,non-English,rain,mid adult,male,75k-125k,40.724197,-73.992531
+P0261,outer suburb,own car,low,high,weekend afternoon,solo,stroller-friendly,nature,yes,high,high,high,30,English,clear,young adult,female,35-75k,40.758984,-73.943296
+P0262,rural fringe,carshare,high,low,weekend morning,solo,none,nature,yes,low,high,med,15,English,clear,mid adult,female,35-75k,40.791567,-73.938645
+P0263,rural fringe,own car,medium,low,weekday evening,older adult pair,none,cultural,no,high,low,high,30,English,heat,old adult,female,<35k,40.728938,-73.990365
+P0264,rural fringe,no car,low,low,weekend afternoon,mixed friends 20-30,ADA/wheelchair,nightlife,yes,high,high,low,30,non-English,heat,young adult,female,<35k,40.724056,-73.949924
+P0265,rural fringe,own car,low,high,weekend afternoon,mixed friends 20-30,stroller-friendly,food,no,low,high,low,15,non-English,rain,mid adult,female,125k+,40.798815,-73.951934
+P0266,inner suburb,own car,medium,medium,weekend afternoon,solo,ADA/wheelchair,food,no,high,low,high,15,non-English,rain,mid adult,male,35-75k,40.739514,-73.984752
+P0267,inner suburb,carshare,high,high,weekday evening,solo,ADA/wheelchair,nightlife,no,high,low,med,15,non-English,heat,young adult,female,125k+,40.797267,-73.940520
+P0268,urban core,carshare,medium,low,weekend morning,older adult pair,ADA/wheelchair,nightlife,no,high,low,low,15,non-English,rain,old adult,female,35-75k,40.789589,-73.937460
+P0269,inner suburb,no car,high,low,weekend afternoon,solo,none,cultural,yes,high,low,med,30,non-English,rain,mid adult,female,35-75k,40.784569,-73.979583
+P0270,outer suburb,carshare,medium,low,weekday evening,solo,ADA/wheelchair,nightlife,no,low,low,high,30,non-English,rain,old adult,female,35-75k,40.716211,-74.000134
+P0271,inner suburb,own car,high,medium,weekend afternoon,solo,none,food,yes,high,high,low,30,English,rain,senior,male,75k-125k,40.721292,-73.948875
+P0272,rural fringe,own car,high,high,weekend afternoon,family w/ small kids,stroller-friendly,cultural,yes,low,high,low,15,non-English,rain,mid adult,male,75k-125k,40.719987,-73.978723
+P0273,inner suburb,carshare,medium,medium,weekend afternoon,older adult pair,ADA/wheelchair,cultural,no,high,high,high,30,non-English,clear,senior,female,75k-125k,40.715519,-73.951851
+P0274,rural fringe,own car,medium,high,weekend afternoon,family w/ small kids,stroller-friendly,food,no,high,low,med,15,English,heat,mid adult,male,75k-125k,40.771031,-73.953634
+P0275,urban core,own car,low,medium,weekday evening,family w/ small kids,ADA/wheelchair,nature,yes,high,high,med,15,non-English,heat,mid adult,female,35-75k,40.717668,-73.992217
+P0276,inner suburb,own car,high,high,weekend afternoon,family w/ small kids,none,nightlife,yes,high,low,high,30,English,clear,mid adult,female,125k+,40.817659,-73.961018
+P0277,inner suburb,own car,high,low,weekday evening,mixed friends 20-30,stroller-friendly,cultural,no,high,low,med,30,English,rain,young adult,female,<35k,40.746080,-73.974939
+P0278,inner suburb,no car,medium,medium,weekend morning,older adult pair,stroller-friendly,nature,no,high,low,med,15,non-English,clear,mid adult,female,35-75k,40.768028,-73.970279
+P0279,outer suburb,own car,high,low,weekend afternoon,older adult pair,ADA/wheelchair,food,yes,low,high,high,15,non-English,clear,mid adult,female,35-75k,40.722283,-73.980161
+P0280,urban core,no car,low,low,weekend morning,older adult pair,ADA/wheelchair,nightlife,no,high,high,high,5,non-English,rain,old adult,female,75k-125k,40.749081,-73.939648
+P0281,rural fringe,carshare,medium,high,weekend morning,solo,ADA/wheelchair,food,no,high,high,high,30,English,clear,old adult,male,125k+,40.761706,-73.931580
+P0282,inner suburb,carshare,low,low,weekend afternoon,solo,none,nature,yes,high,high,high,15,English,rain,mid adult,male,<35k,40.789008,-73.976052
+P0283,outer suburb,no car,low,medium,weekend morning,older adult pair,none,cultural,yes,low,low,low,5,non-English,heat,young adult,female,75k-125k,40.817007,-73.959493
+P0284,urban core,no car,medium,high,weekday evening,solo,ADA/wheelchair,food,yes,high,low,med,30,non-English,clear,young adult,male,35-75k,40.724873,-73.953442
+P0285,rural fringe,carshare,high,high,weekend afternoon,family w/ small kids,stroller-friendly,cultural,no,high,high,med,30,non-English,rain,mid adult,male,75k-125k,40.768305,-73.982263
+P0286,urban core,own car,low,low,weekend afternoon,solo,stroller-friendly,cultural,yes,high,high,low,30,English,clear,young adult,female,35-75k,40.717871,-73.962206
+P0287,inner suburb,no car,low,high,weekday evening,family w/ small kids,none,food,no,low,high,high,30,English,rain,mid adult,female,75k-125k,40.810843,-73.950680
+P0288,rural fringe,no car,medium,low,weekend morning,mixed friends 20-30,none,cultural,no,high,low,low,5,non-English,rain,mid adult,male,35-75k,40.714593,-73.938753

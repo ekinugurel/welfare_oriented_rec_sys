@@ -189,6 +189,7 @@ class GoogleMapsReplica(RecommenderSystem):
         personalization_weight: float = 0.10,
         distance_scale_km: float = 5.0,
         coord_scale_km: float = 1.0,
+        coord_distance_km=euclidean_distance_km,
     ):
         super().__init__(name="google_maps", catalog=catalog)
         weight_sum = prominence_weight + relevance_weight + proximity_weight
@@ -198,6 +199,9 @@ class GoogleMapsReplica(RecommenderSystem):
         self.personalization_weight = max(0.0, min(0.35, personalization_weight))
         self.distance_scale_km = max(0.1, distance_scale_km)
         self.coord_scale_km = max(1e-4, coord_scale_km)
+        # Distance between two location tuples. Defaults to Euclidean (grid mode);
+        # OSM mode injects haversine so (lat, lon) proximity is measured in km.
+        self.coord_distance_km = coord_distance_km
 
     def _prominence_scores(self, places: Sequence[Place]) -> Dict[str, float]:
         if not places:
@@ -221,7 +225,7 @@ class GoogleMapsReplica(RecommenderSystem):
         return 0.75 * qr_score + 0.25 * qi_score
 
     def _proximity_score(self, place: Place, user: UserContext) -> float:
-        dist_km = euclidean_distance_km(user.location, place.location) * self.coord_scale_km
+        dist_km = self.coord_distance_km(user.location, place.location) * self.coord_scale_km
         return math.exp(-dist_km / self.distance_scale_km)
 
     def recommend(self, user: UserContext, leisure_subtype: str, top_k: int = 5) -> List[Recommendation]:

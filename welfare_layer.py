@@ -323,6 +323,7 @@ class WelfareAwareOrchestrator:
         pup_alpha: float = 0.6,
         rm_epsilon: float = 0.3,
         coord_scale_km: float = 1.0,
+        coord_distance_km=euclidean_distance_km,
         score_to_utility_mode: str = DEFAULT_SCORE_TO_UTILITY_MODE,
         score_utility_scale: float = DEFAULT_SCORE_UTILITY_SCALE,
     ):
@@ -332,6 +333,8 @@ class WelfareAwareOrchestrator:
         self.pup_alpha = pup_alpha
         self.rm_epsilon = rm_epsilon
         self.coord_scale_km = coord_scale_km
+        # Euclidean (grid) by default; OSM mode injects haversine for (lat, lon).
+        self.coord_distance_km = coord_distance_km
         self.score_to_utility_mode = score_to_utility_mode
         self.score_utility_scale = score_utility_scale
         # Feedback history for continuous learning
@@ -364,7 +367,7 @@ class WelfareAwareOrchestrator:
                 )
 
                 # Estimate Ĉ^travel
-                dist_km = euclidean_distance_km(user.location, rec.place.location) * self.coord_scale_km
+                dist_km = self.coord_distance_km(user.location, rec.place.location) * self.coord_scale_km
                 c_hat_travel = self.tce.estimate_travel_cost(user.user_id, dist_km)
 
                 pup = compute_pup(v_hat_act, c_hat_travel, sigma_i)
